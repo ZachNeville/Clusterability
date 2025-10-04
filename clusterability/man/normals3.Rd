@@ -10,13 +10,15 @@ Normal distributions. 50 observations are from a distribution with mean vector
 observations from a distribution with mean vector (3, 6). For each of these three
 distributions, the x and y variables have unit variance and are uncorrelated.
 The dataset is clusterable.}
-\format{A data frame with 150 rows and 3 variables:
+\format{
+A data frame with 150 rows and 3 variables:
 
 \describe{
    \item{x}{x variable}
    \item{y}{y variable}
    \item{cluster}{Distribution from which the observation was sampled}
-}}
+}
+}
 \usage{
 normals3
 }

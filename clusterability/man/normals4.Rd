@@ -9,14 +9,16 @@ Normal distributions. 75 observations come from a distribution with mean vector
 (1, 3, 2) and 75 observations come from a distribution with mean vector (4, 6, 0).
 For each distribution, the variables each have unit variance and are uncorrelated.
 The dataset is clusterable.}
-\format{A data frame with 150 rows and 4 variables:
+\format{
+A data frame with 150 rows and 4 variables:
 
 \describe{
    \item{x}{x variable}
    \item{y}{y variable}
    \item{z}{z variable}
    \item{cluster}{Distribution from which the observation was sampled}
-}}
+}
+}
 \usage{
 normals4
 }

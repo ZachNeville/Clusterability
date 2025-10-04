@@ -1,6 +1,6 @@
 # Internal functions for performing dimension reduction and/or standardization, as part of the clusterability R package.
 
-# Copyright (C) 2020  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
+# Copyright (C) 2025  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -31,6 +31,62 @@ performpca <- function(x, center, scale) {
    return(-1 * pcaresult$x[, 1])
   } else {
     return(pcaresult$x[, 1])
+  }
+}
+
+
+performspca.sparsepca <- function(x, center, scale, alpha, beta) {
+  spcaresult <- sparsepca::spca(x, k=1, alpha=alpha, beta=beta, center = center, scale = scale, verbose=0)
+
+  # Because different machines or implementations of sparse PCA can yield
+  # differently signed rotation matrices, and thus scores,
+  # we multiply all scores by -1 if the first loading is negative.
+  # This should ensure consistent results across machines and between SAS and R implementations,
+  # assuming the variables are ordered the same.
+
+  # code snippet for using first "nonzero" loading
+  #
+  # first.loadings <- spcaresult$loadings[1,]
+  # first.nonzero.loading <- first.loadings[first.loadings!=0][1]
+  # if( !is.na(first.nonzero.loading) & first.nonzero.loading < 0)
+
+
+  if(spcaresult$loadings[1, 1] < 0) {
+    return(-1 * spcaresult$scores[,1])
+  } else {
+    return(spcaresult$scores[,1])
+  }
+}
+
+# Compute and return the scores for the first sparse principal component in sPCA
+#    using the ELASTICNET implementation
+# center = TRUE/FALSE
+# scale = TRUE/FALSE
+
+performspca.elasticnet <- function(x, para, lambda) {
+  # elasticnet spca uses its own rules for centering and scaling.
+
+  sparse="penalty"
+  spcaresult <- elasticnet::spca(x, 1, para, type="predictor",
+       sparse=sparse, use.corr=FALSE, lambda=lambda,
+       max.iter=200, trace=FALSE, eps.conv=1e-3)
+  # Because different machines or implementations of sparse PCA can yield
+  # differently signed rotation matrices, and thus scores,
+  # we multiply all scores by -1 if the first loading is negative.
+  # This should ensure consistent results across machines and between SAS and R implementations,
+  # assuming the variables are ordered the same.
+
+  # code snippet for using first "nonzero" loading
+  #
+  # first.loadings <- spcaresult$loadings[1,]
+  # first.nonzero.loading <- first.loadings[first.loadings!=0][1]
+  # if( !is.na(first.nonzero.loading) & first.nonzero.loading < 0)
+
+  scores <- x %*% spcaresult$loadings
+  if(spcaresult$loadings[1, 1] < 0) {
+    return(-1 * scores[,1])
+  } else {
+    return(scores[,1])
   }
 }
 

@@ -1,6 +1,6 @@
 # Performs Dip Test of Unimodality and Silverman's Critical Bandwidth Test, for use in the clusterability R package.
 
-# Copyright (C) 2020  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
+# Copyright (C) 2025  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
 
 # Perform the Dip Test of Unimodality
 dip <- function(dipdata, simulatepvalue = FALSE, B = 2000) {

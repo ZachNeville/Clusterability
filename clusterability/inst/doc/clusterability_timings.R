@@ -1,6 +1,7 @@
+####################################################
 # Timings for the clusterability R package
 
-# Copyright (C) 2020  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
+# Copyright (C) 2025  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,25 +19,20 @@
 
 ##### Initial setup #####
 library(clusterability)
-ntimes <- 1000
+library(bench)
+ntimes <- 10
 
-testandprint <- function(data, test, reduction, seed) {
-  starttime <- Sys.time()
+testandprint <- function(data, test, reduction, seed, spca_method="EN") {
+
   if(test == "dip"){
-    for (i in 1:ntimes) {
-      clusterabilitytest(data, "dip", reduction)
-    }
-
+    benchmarkResult <- bench::mark(clusterabilitytest(data, "dip", reduction, spca_method=spca_method), min_iterations = ntimes)
   } else if(test == "silverman") {
-    for (i in 1:ntimes) {
-      clusterabilitytest(data, "silverman", reduction, distance_standardize = "NONE", s_setseed = seed)
-    }
+    benchmarkResult <- bench::mark(clusterabilitytest(data, "silverman", reduction, spca_method=spca_method, distance_standardize = "NONE", s_setseed = seed), min_iterations = ntimes)
   } else {
     stop("Invalid test")
   }
 
-  endtime <- Sys.time()
-  print(endtime - starttime)
+  print(paste("Median Time: ", bench::as_bench_time(benchmarkResult["median"]), ". Iterations: ", benchmarkResult["n_itr"], sep = " "))
 }
 
 ##### normals1 #####
@@ -47,6 +43,10 @@ testandprint(normals1, "dip", "distance", NULL)
 testandprint(normals1, "silverman", "pca", 123)
 testandprint(normals1, "silverman", "distance", 123)
 
+testandprint(normals1, "dip", "spca", NULL, "EN")
+testandprint(normals1, "dip", "spca", NULL, "VP")
+testandprint(normals1, "silverman", "spca", 123, "EN")
+testandprint(normals1, "silverman", "spca", 123, "VP")
 
 ##### normals2 #####
 data(normals2)
@@ -56,6 +56,10 @@ testandprint(normals2, "dip", "distance", NULL)
 testandprint(normals2, "silverman", "pca", 123)
 testandprint(normals2, "silverman", "distance", 123)
 
+testandprint(normals2, "dip", "spca", NULL, "EN")
+testandprint(normals2, "dip", "spca", NULL, "VP")
+testandprint(normals2, "silverman", "spca", 123, "EN")
+testandprint(normals2, "silverman", "spca", 123, "VP")
 
 ##### normals3 #####
 data(normals3)
@@ -64,6 +68,11 @@ testandprint(normals3, "dip", "pca", NULL)
 testandprint(normals3, "dip", "distance", NULL)
 testandprint(normals3, "silverman", "pca", 123)
 testandprint(normals3, "silverman", "distance", 123)
+
+testandprint(normals3, "dip", "spca", NULL, "EN")
+testandprint(normals3, "dip", "spca", NULL, "VP")
+testandprint(normals3, "silverman", "spca", 123, "EN")
+testandprint(normals3, "silverman", "spca", 123, "VP")
 
 
 ##### normals4 #####
@@ -74,6 +83,10 @@ testandprint(normals4, "dip", "distance", NULL)
 testandprint(normals4, "silverman", "pca", 123)
 testandprint(normals4, "silverman", "distance", 123)
 
+testandprint(normals4, "dip", "spca", NULL, "EN")
+testandprint(normals4, "dip", "spca", NULL, "VP")
+testandprint(normals4, "silverman", "spca", 123, "EN")
+testandprint(normals4, "silverman", "spca", 123, "VP")
 
 ##### normals5 #####
 data(normals5)
@@ -83,12 +96,23 @@ testandprint(normals5, "dip", "distance", NULL)
 testandprint(normals5, "silverman", "pca", 123)
 testandprint(normals5, "silverman", "distance", 123)
 
+testandprint(normals5, "dip", "spca", NULL, "EN")
+testandprint(normals5, "dip", "spca", NULL, "VP")
+testandprint(normals5, "silverman", "spca", 123, "EN")
+testandprint(normals5, "silverman", "spca", 123, "VP")
+
 ##### cars #####
 data(cars)
 testandprint(cars, "dip", "pca", NULL)
 testandprint(cars, "dip", "distance", NULL)
 testandprint(cars, "silverman", "pca", 123)
 testandprint(cars, "silverman", "distance", 123)
+
+testandprint(cars, "dip", "spca", NULL, "EN")
+testandprint(cars, "dip", "spca", NULL, "VP")
+testandprint(cars, "silverman", "spca", 123, "EN")
+testandprint(cars, "silverman", "spca", 123, "VP")
+
 
 ##### iris #####
 data(iris)
@@ -98,3 +122,7 @@ testandprint(iris_numeric, "dip", "distance", NULL)
 testandprint(iris_numeric, "silverman", "pca", 123)
 testandprint(iris_numeric, "silverman", "distance", 123)
 
+testandprint(iris_numeric, "dip", "spca", NULL, "EN")
+testandprint(iris_numeric, "dip", "spca", NULL, "VP")
+testandprint(iris_numeric, "silverman", "spca", 123, "EN")
+testandprint(iris_numeric, "silverman", "spca", 123, "VP")

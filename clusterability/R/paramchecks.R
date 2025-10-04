@@ -1,6 +1,6 @@
 # Internal functions for parameter checking, as part of the clusterability R package
 
-# Copyright (C) 2020  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
+# Copyright (C) 2025  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -95,7 +95,7 @@ validate_metric <- function(metric, x) {
 
 # Validates the 'reduction' argument and returns an uppercase version of it
 validate_reduction <- function(reduction) {
-  valid_reduction <- c("PCA", "DISTANCE", "NONE")
+  valid_reduction <- c("PCA", "SPCA", "DISTANCE", "NONE")
   isvalid <- tryCatch(isTRUE((!is.null(reduction) & (toupper(reduction) %in% valid_reduction))),
                       error = function(e) return(FALSE))
 
@@ -103,7 +103,7 @@ validate_reduction <- function(reduction) {
     return(toupper(reduction))
   }
   else {
-    warning("Invalid reduction method was used. No reduction was performed. The 'reduction' argument must be \"PCA\", \"DISTANCE\", or \"NONE\"")
+    warning("Invalid reduction method was used. No reduction was performed. The 'reduction' argument must be \"PCA\", \"SPCA\", \"DISTANCE\", or \"NONE\"")
     return("NONE")
   }
 }
@@ -146,6 +146,34 @@ validate_pca_center <- function(center) {
 validate_pca_scale <- function(scale) {
   return(validate_boolean(scale, "pca_scale", TRUE))
 }
+
+
+
+# Validates the 'spca_method' argument and returns an uppercase version of it
+validate_spca_method <- function(spca_method) {
+  valid_spca_method <- c("EN", "VP")
+  isvalid <- tryCatch(isTRUE((!is.null(spca_method) & (toupper(spca_method) %in% valid_spca_method))),
+                      error = function(e) return(FALSE))
+
+  if(isvalid) {
+    return(toupper(spca_method))
+  }
+  else {
+    stop("Invalid spca method was used. The 'spca_method' argument must be \"EN\" or \"VP\"")
+  }
+}
+
+# In the case of SPCA VP, need the "spca_center" and "spca_scale" to be logical type
+validate_spca_VP_center <- function(center) {
+  return(validate_boolean(center, "spca_VP_center", TRUE))
+}
+
+validate_spca_VP_scale <- function(scale) {
+  return(validate_boolean(scale, "spca_VP_scale", TRUE))
+}
+
+
+# todo add VP_alpha VP_beta EN_para EN_lambda checks
 
 validate_completecase <- function(cc) {
   return(validate_boolean(cc, "completecase", FALSE))

@@ -95,6 +95,55 @@ test_that("performpca", {
   expect_equal(pca_n, tpca_n, tolerance = 1e-14)
 })
 
+test_that("performspca.elasticnet", {
+  # Setup
+  test2 <- matrix(c(1, 4, 8, 2, 4, 0, 9, 7, 7), nrow = 3)
+
+  para = 0.01
+  lambda = 1e-6
+  sparse="penalty"
+  spca <- performspca.elasticnet(test2, para, lambda)
+
+  getscore.adjustsign <-  function(x) if(x$loadings[1, 1] < 0) {
+    return(-1 * (test2 %*% x$loadings)[, 1])
+  } else {
+    return( (test2 %*% x$loadings)[, 1])
+  }
+  tspca <- getscore.adjustsign(elasticnet::spca(test2, 1, para, type="predictor",
+                                                   sparse=sparse, use.corr=FALSE, lambda=lambda,
+                                                   max.iter=200, trace=FALSE, eps.conv=1e-3))
+  # Test - comparing results to "known truth"
+  expect_equal(spca, tspca, tolerance = 1e-14)
+})
+
+test_that("performspca.sparsepca", {
+  # Setup
+  test2 <- matrix(c(1, 4, 8, 2, 4, 0, 9, 7, 7), nrow = 3)
+
+  alpha=1e-3
+  beta=1e-3
+  spca_cs <- performspca.sparsepca(test2, TRUE, TRUE, alpha, beta)
+  spca_c <- performspca.sparsepca(test2, TRUE, FALSE, alpha, beta)
+  spca_s <- performspca.sparsepca(test2, FALSE, TRUE, alpha, beta)
+  spca_n <- performspca.sparsepca(test2, FALSE, FALSE, alpha, beta)
+
+  adjustsign <-  function(x) if(x$loadings[1, 1] < 0) {
+    return(-1 * x$scores[, 1])
+  } else {
+    return(x$scores[, 1])
+  }
+  tspca_cs <- adjustsign(sparsepca::spca(test2, k=1, alpha=alpha, beta=beta, center = TRUE, scale = TRUE, verbose=0))
+  tspca_c <- adjustsign(sparsepca::spca(test2, k=1, alpha=alpha, beta=beta, center = TRUE, scale = FALSE, verbose=0))
+  tspca_s <- adjustsign(sparsepca::spca(test2, k=1, alpha=alpha, beta=beta, center = FALSE, scale = TRUE, verbose=0))
+  tspca_n <- adjustsign(sparsepca::spca(test2, k=1, alpha=alpha, beta=beta, center = FALSE, scale = FALSE, verbose=0))
+
+  # Test - comparing results to "known truth"
+  expect_equal(spca_cs, tspca_cs, tolerance = 1e-14)
+  expect_equal(spca_c, tspca_c, tolerance = 1e-14)
+  expect_equal(spca_s, tspca_s, tolerance = 1e-14)
+  expect_equal(spca_n, tspca_n, tolerance = 1e-14)
+})
+
 test_that("get_lower_triangle", {
   # Includes unit and integration tests
 

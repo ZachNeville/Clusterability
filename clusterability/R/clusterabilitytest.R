@@ -1,5 +1,5 @@
 #' Perform a test of clusterability
-# Copyright (C) 2020  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
+# Copyright (C) 2025  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,13 +16,14 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #'
 #'
-#' @description Performs tests for clusterability of a data set and returns results in a clusterability object. Can do data reduction via PCA or pairwise distances and standardize data prior to performing the test.
+#' @description Performs tests for clusterability of a data set and returns results in a clusterability object. Can do data reduction via PCA, sparse PCA, or pairwise distances and standardize data prior to performing the test.
 #' @param data the data set to be used in the test. Must contain only numeric data.
 #' @param test the test to be performed. Either \code{"dip"} or \code{"silverman"}. See 'Details' section below for how to pick a test.
 #' @param reduction any dimension reduction that is to be performed.
 #' \itemize{
 #' \item{\code{"none"} performs no dimension reduction.}
 #' \item{\code{"pca"} uses the scores from the first principal component.}
+#' \item{\code{"spca"} uses the scores from the first (sparse) principal component.}
 #' \item{\code{"distance"} computes pairwise distances (using \code{distance_metric} as the metric).}
 #' }
 #' For multivariate \code{data}, dimension reduction is required.
@@ -48,9 +49,16 @@
 #' }
 #' @param pca_center if applicable, a logical value indicating whether the variables should be shifted to be zero centered (see \code{\link{prcomp}} for more details). Default is \code{TRUE}.
 #' @param pca_scale if applicable, a logical value indicating whether the variables should be scaled to have unit variance before the analysis takes place (see \code{\link{prcomp}} for details). Default is \code{TRUE}.
+#' @param spca_method if applicable, the sparse PCA method to use. Either \code{"EN"} for the elasticnet implementation or \code{"VP"} for the variable projection implementation.
+#' @param spca_EN_para if applicable, a positive number used as a penalty parameter. Default is \code{0.01}.
+#' @param spca_EN_lambda if applicable, the quadratic penalty parameter. Default is \code{1e-6}.
+#' @param spca_VP_center if applicable, a logical value indicating whether the variables should be shifted to be zero centered. Default is \code{TRUE}.
+#' @param spca_VP_scale if applicable, a logical value indicating whether the variables should be scaled to have unit variance. Default is \code{TRUE}.
+#' @param spca_VP_alpha if applicable, the sparsity controlling parameter. Default is \code{1e-3}.
+#' @param spca_VP_beta if applicable, the amount of ridge shrinkage to apply in order to improve conditioning. Default is \code{1e-3}.
 #' @param is_dist_matrix a logical value indicating whether the \code{data} argument is a distance matrix. If \code{TRUE} then the lower triangular portion of \code{data} will be extracted and be used in the multimodality test.
 #' @param completecase a logical value indicating whether a complete case analysis should be performed. For both tests, missing data must be removed before the test can be performed. This can be done manually by the user or by setting \code{completecase = TRUE}.
-#' @param d_simulatepvalue for Dip Test, a logical value indicating whether \eqn{p}~values should be obtained via Monte Carlo simulation (see \code{\link{dip.test}} for details).
+#' @param d_simulatepvalue for Dip Test, a logical value indicating whether \eqn{p}~values should be obtained via Monte Carlo simulation (see \code{\link[diptest]{dip.test}} for details).
 #' @param d_reps for Dip Test, a positive integer. The number of replicates used in Monte Carlo simulation. Only used if \code{d_simulatepvalue} is \code{TRUE}.
 #' @param s_m for Silverman Test, a positive integer. The number of bootstrap replicates used in the test. Default is \code{999}.
 #' @param s_adjust for Silverman Test, a logical value indicating whether p-values are adjusted using work by Hall and York.
@@ -99,6 +107,10 @@
 #' @export
 clusterabilitytest <- function(data, test, reduction = "pca", distance_metric = "euclidean",
                                 distance_standardize = "std", pca_center = TRUE, pca_scale = TRUE,
+                                spca_method = "EN",
+                                spca_EN_para = 0.01, spca_EN_lambda = 1e-6,
+                                spca_VP_center = TRUE, spca_VP_scale = TRUE,
+                                spca_VP_alpha = 1e-3 , spca_VP_beta = 1e-3,
                                 is_dist_matrix = FALSE, completecase = FALSE, d_simulatepvalue = FALSE,
                                 d_reps = 2000, s_m = 999, s_adjust = TRUE, s_digits = 6, s_setseed = NULL, s_outseed = FALSE) {
 
@@ -120,6 +132,11 @@ clusterabilitytest <- function(data, test, reduction = "pca", distance_metric = 
   reduction <- validate_reduction(reduction)
   pca_center <- validate_pca_center(pca_center)
   pca_scale <- validate_pca_scale(pca_scale)
+  spca_method <- validate_spca_method(spca_method)
+  spca_VP_center <- validate_spca_VP_center(spca_VP_center)
+  spca_VP_scale <- validate_spca_VP_scale(spca_VP_scale)
+  #todo check vp_alpha vp_beta en_para en_lambda
+
   is_dist_matrix <- validate_isdistmatrix(is_dist_matrix, reduction, data)
   distance_metric <- validate_metric(distance_metric, data)
   distance_standardize <- validate_standardize(distance_standardize)
@@ -149,6 +166,13 @@ clusterabilitytest <- function(data, test, reduction = "pca", distance_metric = 
   # Perform dimension reduction if requested
   if (identical(reduction, "PCA")) {
     data <- performpca(data, pca_center, pca_scale)
+  } else if (identical(reduction, "SPCA")) {
+    if(identical(spca_method, "VP")) {
+      data <- performspca.sparsepca(data, spca_VP_center,
+                          spca_VP_scale, spca_VP_alpha, spca_VP_beta)
+    } else if(identical(spca_method, "EN")) {
+      data <- performspca.elasticnet(data, spca_EN_para, spca_EN_lambda)
+    } else {stop("Supported SPCA methods are: VP and EN ");}
   } else if (identical(reduction, "DISTANCE")) {
     data <- computedistances(data, distance_metric)
   } else if (is_dist_matrix) {
@@ -174,6 +198,16 @@ clusterabilitytest <- function(data, test, reduction = "pca", distance_metric = 
   } else if (identical(reduction, "PCA")) {
     arglist$pca_center <- pca_center
     arglist$pca_scale <- pca_scale
+  } else if (identical(reduction, "SPCA")) {
+    arglist$spca_method <- spca_method
+
+    arglist$spca_VP_center <- spca_VP_center
+    arglist$spca_VP_scale <- spca_VP_scale
+    arglist$spca_VP_alpha <- spca_VP_alpha
+    arglist$spca_VP_beta <- spca_VP_beta
+    arglist$spca_EN_para <- spca_EN_para
+    arglist$spca_EN_lambda <- spca_EN_lambda
+
   }
 
   if (identical(test, "DIP")) {
@@ -272,6 +306,8 @@ print.clusterability <- function(x, ...) {
     cat("\n")
   } else if(identical(toupper(x$arglist$reduction), 'PCA')) {
     cat('Data Reduced Using: PCA\n')
+  }  else if(identical(toupper(x$arglist$reduction), 'SPCA')) {
+    cat('Data Reduced Using: SPCA\n')
   }
 
   # Test name and results

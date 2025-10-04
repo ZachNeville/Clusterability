@@ -4,13 +4,15 @@
 \name{normals1}
 \alias{normals1}
 \title{Data generated from a single multivariate Normal distribution, 2 dimensions.}
-\format{A data frame with 150 rows and 3 variables:
+\format{
+A data frame with 150 rows and 3 variables:
 
 \describe{
    \item{x}{x variable}
    \item{y}{y variable}
    \item{cluster}{Distribution from which the observation was sampled}
-}}
+}
+}
 \usage{
 normals1
 }

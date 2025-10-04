@@ -1,5 +1,5 @@
 # Clusterability R Package
-The **clusterability** package tests for cluster tendancy of a dataset. Results of these tests can inform whether clustering algorithms are appropriate for the data.
+The **clusterability** package tests for cluster tendency of a dataset. Results of these tests can inform whether clustering algorithms are appropriate for the data.
 
 ## Installation
 You can install the released version of **clusterability** from [CRAN](https://CRAN.R-project.org) with:
@@ -7,7 +7,7 @@ You can install the released version of **clusterability** from [CRAN](https://C
 ``` r
 install.packages("clusterability")
 ```
-If you would prefer to use a newer version of **clusterability** not yet available on CRAN, it can be downloaded as a binary package from this repository and installed locally. [Documentation](https://cran.r-project.org/doc/manuals/R-admin.html#Installing-packages) on this process can be found on the R project website.
+If you would prefer to use a newer version of **clusterability** not yet available on CRAN, it can be downloaded as a source package from this repository and installed locally. [Documentation](https://cran.r-project.org/doc/manuals/R-admin.html#Installing-packages) on this process can be found on the R project website.
 
 ## Example
 
@@ -66,10 +66,11 @@ The following parameters are optional and can be used to further customize the b
 ##### reduction
 The dimension reduction technique to be used to reduce the **data** to a unidimensional dataset. 
 -    Principal Component Analysis can be used by specifying the value `"pca"`. This is the default behavior. 
+-    Sparse Principal Component Analysis can be used by specifying the value `"spca"`.
 -    Pairwise Distances can be used by specifying the value `"distance"`. 
 -    If the **data** argument is a one-dimensional data set, the `"none"` option can be used.
 
-##### distance_metric
+##### distance_metric*
 If using pairwise distances as the dimension reduction technique, this is the metric to be used in computing the distances. The default is `"euclidean"`. See the documentation for the `clusterabilitytest()` function for a list of the available metrics.
 ##### distance_standardize
 If using pairwise distances for dimension reduction, this is how the variables should be standardized before computing the distances. The default is `"std"`, which standardizes each variable to have mean 0 and standard deviation 1. See the documentation for a list of the available standardization methods.
@@ -77,12 +78,14 @@ If using pairwise distances for dimension reduction, this is how the variables s
 If using PCA as the dimension reduction technique, this is a logical determines if the variables are shifted to be zero centered. The default is `TRUE`. 
 ##### pca_scale
 If using PCA for dimension reduction, this is a logical value that determines if the variables are scaled to have unit variance. The default is `TRUE`.
+##### spca_method
+If using sparse PCA for dimension reduction, this is the sparse PCA method to use. Either \code{"EN"} for the elasticnet implementation (default) or \code{"VP"} for the variable projection implementation.
 ##### is_dist_matrix
 This is a logical value indicating if the **data** argument is a distance matrix. This is `FALSE` by default. If it is `TRUE`, then the lower triangular portion of **data** will be extracted and used.
 ##### completecase
 This is a logical value indicating if a complete case analysis should be performed. This is `FALSE` by default. Missing data must be removed before a test can be performed, which can be done either manually by the user or by specifying `TRUE` for the **completecase** argument. 
 ## Additional Parameters and Details
-Parameters to customize the Dip Test are prefixed with *d_* and the Silverman Test with *s_*. Documentation for these parameters, along with additional details for the parameters described above, is provided in the documentation for `clusterabilitytest()`, which can be found by executing the following command:
+Parameters to customize the behavior of sparse PCA are prefixed with *spca_*, Dip Test with *d_* and Silverman Test with *s_*. Documentation for these parameters, along with additional details for the parameters described above, is provided in the documentation for `clusterabilitytest()`, which can be found by executing the following command:
 
 ``` r
 ?clusterabilitytest
@@ -91,11 +94,11 @@ Parameters to customize the Dip Test are prefixed with *d_* and the Silverman Te
 Documentation is also available in the accompanying paper.
 
 ## Supplemental Files
+The following [supplemental files](clusterability/inst/doc/SupplementalFiles.md] are provided to assist with reproducing the results in the accompanying paper.
+ 
 ##### clusterability_timings.R
-This contains code to test the relative computational performance of each test and dimension reduction combination.
+This contains code to test the relative computational performance of each test and dimension reduction combination. The **bench** package is used to run these tests.
 ##### examples.R
 This contains code to replicate the examples in the accompanying paper.
 ##### Rplots.R
 This contains code to replicate the plots provided in the accompanying paper.
-
-The software is also archived at [![DOI](https://zenodo.org/badge/233837067.svg)](https://zenodo.org/badge/latestdoi/233837067)

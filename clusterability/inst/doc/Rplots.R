@@ -1,6 +1,6 @@
 # Code to produce plots for the clusterability package
 
-# Copyright (C) 2020  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
+# Copyright (C) 2025  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

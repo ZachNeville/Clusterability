@@ -4,12 +4,31 @@
 \alias{clusterabilitytest}
 \title{Perform a test of clusterability}
 \usage{
-clusterabilitytest(data, test, reduction = "pca",
-  distance_metric = "euclidean", distance_standardize = "std",
-  pca_center = TRUE, pca_scale = TRUE, is_dist_matrix = FALSE,
-  completecase = FALSE, d_simulatepvalue = FALSE, d_reps = 2000,
-  s_m = 999, s_adjust = TRUE, s_digits = 6, s_setseed = NULL,
-  s_outseed = FALSE)
+clusterabilitytest(
+  data,
+  test,
+  reduction = "pca",
+  distance_metric = "euclidean",
+  distance_standardize = "std",
+  pca_center = TRUE,
+  pca_scale = TRUE,
+  spca_method = "EN",
+  spca_EN_para = 0.01,
+  spca_EN_lambda = 1e-06,
+  spca_VP_center = TRUE,
+  spca_VP_scale = TRUE,
+  spca_VP_alpha = 0.001,
+  spca_VP_beta = 0.001,
+  is_dist_matrix = FALSE,
+  completecase = FALSE,
+  d_simulatepvalue = FALSE,
+  d_reps = 2000,
+  s_m = 999,
+  s_adjust = TRUE,
+  s_digits = 6,
+  s_setseed = NULL,
+  s_outseed = FALSE
+)
 }
 \arguments{
 \item{data}{the data set to be used in the test. Must contain only numeric data.}
@@ -20,6 +39,7 @@ clusterabilitytest(data, test, reduction = "pca",
 \itemize{
 \item{\code{"none"} performs no dimension reduction.}
 \item{\code{"pca"} uses the scores from the first principal component.}
+\item{\code{"spca"} uses the scores from the first (sparse) principal component.}
 \item{\code{"distance"} computes pairwise distances (using \code{distance_metric} as the metric).}
 }
 For multivariate \code{data}, dimension reduction is required.}
@@ -50,11 +70,25 @@ CAUTION: Not all of these have been tested, but instead are provided to potentia
 
 \item{pca_scale}{if applicable, a logical value indicating whether the variables should be scaled to have unit variance before the analysis takes place (see \code{\link{prcomp}} for details). Default is \code{TRUE}.}
 
+\item{spca_method}{if applicable, the sparse PCA method to use. Either \code{"EN"} for the elasticnet implementation or \code{"VP"} for the variable projection implementation.}
+
+\item{spca_EN_para}{if applicable, a positive number used as a penalty parameter. Default is \code{0.01}.}
+
+\item{spca_EN_lambda}{if applicable, the quadratic penalty parameter. Default is \code{1e-6}.}
+
+\item{spca_VP_center}{if applicable, a logical value indicating whether the variables should be shifted to be zero centered. Default is \code{TRUE}.}
+
+\item{spca_VP_scale}{if applicable, a logical value indicating whether the variables should be scaled to have unit variance. Default is \code{TRUE}.}
+
+\item{spca_VP_alpha}{if applicable, the sparsity controlling parameter. Default is \code{1e-3}.}
+
+\item{spca_VP_beta}{if applicable, the amount of ridge shrinkage to apply in order to improve conditioning. Default is \code{1e-3}.}
+
 \item{is_dist_matrix}{a logical value indicating whether the \code{data} argument is a distance matrix. If \code{TRUE} then the lower triangular portion of \code{data} will be extracted and be used in the multimodality test.}
 
 \item{completecase}{a logical value indicating whether a complete case analysis should be performed. For both tests, missing data must be removed before the test can be performed. This can be done manually by the user or by setting \code{completecase = TRUE}.}
 
-\item{d_simulatepvalue}{for Dip Test, a logical value indicating whether \eqn{p}~values should be obtained via Monte Carlo simulation (see \code{\link{dip.test}} for details).}
+\item{d_simulatepvalue}{for Dip Test, a logical value indicating whether \eqn{p}~values should be obtained via Monte Carlo simulation (see \code{\link[diptest]{dip.test}} for details).}
 
 \item{d_reps}{for Dip Test, a positive integer. The number of replicates used in Monte Carlo simulation. Only used if \code{d_simulatepvalue} is \code{TRUE}.}
 
@@ -72,7 +106,7 @@ CAUTION: Not all of these have been tested, but instead are provided to potentia
 \code{clusterabilitytest} returns a \code{clusterability} object containing information on the test performed and results. Can be printed using the \code{\link{print.clusterability}} function.
 }
 \description{
-Performs tests for clusterability of a data set and returns results in a clusterability object. Can do data reduction via PCA or pairwise distances and standardize data prior to performing the test.
+Performs tests for clusterability of a data set and returns results in a clusterability object. Can do data reduction via PCA, sparse PCA, or pairwise distances and standardize data prior to performing the test.
 }
 \examples{
 ### Quick start ###
