@@ -94,7 +94,7 @@ Parameters to customize the behavior of sparse PCA are prefixed with *spca_*, Di
 Documentation is also available in the accompanying paper.
 
 ## Supplemental Files
-The following [supplemental files](clusterability/inst/doc/SupplementalFiles.md] are provided to assist with reproducing the results in the accompanying paper.
+The following [supplemental files](clusterability/inst/doc/SupplementalFiles.md) are provided to assist with reproducing the results in the accompanying paper.
  
 ##### clusterability_timings.R
 This contains code to test the relative computational performance of each test and dimension reduction combination. The **bench** package is used to run these tests.
