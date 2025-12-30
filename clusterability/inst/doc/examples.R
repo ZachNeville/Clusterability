@@ -21,9 +21,9 @@ library(clusterability)
 
 # Normals1 - results
 data(normals1)
-normals1 <- normals1[,-3]
+normals1 <- normals1[, -3]
 norm1_dippca <- clusterabilitytest(normals1, "dip")
-norm1_dipdist <- clusterabilitytest(normals1, "dip",  distance_standardize = "NONE", reduction = "distance")
+norm1_dipdist <- clusterabilitytest(normals1, "dip", distance_standardize = "NONE", reduction = "distance")
 norm1_silvpca <- clusterabilitytest(normals1, "silverman", s_setseed = 123)
 norm1_silvdist <- clusterabilitytest(normals1, "silverman", distance_standardize = "NONE", reduction = "distance", s_setseed = 123)
 
@@ -31,7 +31,6 @@ norm1_dipspcaEN <- clusterabilitytest(normals1, "dip", reduction = "spca", spca_
 norm1_dipspcaVP <- clusterabilitytest(normals1, "dip", reduction = "spca", spca_method = "VP")
 norm1_silvspcaEN <- clusterabilitytest(normals1, "silverman", s_setseed = 123, reduction = "spca", spca_method = "EN")
 norm1_silvspcaVP <- clusterabilitytest(normals1, "silverman", s_setseed = 123, reduction = "spca", spca_method = "VP")
-
 
 
 print(norm1_dippca)
@@ -47,7 +46,7 @@ print(norm1_silvspcaVP)
 
 # Normals2 - results
 data(normals2)
-normals2 <- normals2[,-3]
+normals2 <- normals2[, -3]
 norm2_dippca <- clusterabilitytest(normals2, "dip")
 norm2_dipdist <- clusterabilitytest(normals2, "dip", reduction = "distance", distance_standardize = "NONE")
 norm2_silvpca <- clusterabilitytest(normals2, "silverman", s_setseed = 123)
@@ -70,10 +69,9 @@ print(norm2_silvspcaEN)
 print(norm2_silvspcaVP)
 
 
-
 # Normals3 - results
 data(normals3)
-normals3 <- normals3[,-3]
+normals3 <- normals3[, -3]
 norm3_dippca <- clusterabilitytest(normals3, "dip")
 norm3_dipdist <- clusterabilitytest(normals3, "dip", reduction = "distance", distance_standardize = "NONE")
 norm3_silvpca <- clusterabilitytest(normals3, "silverman", s_setseed = 123)
@@ -98,7 +96,7 @@ print(norm3_silvspcaVP)
 
 # Normals4 - results
 data(normals4)
-normals4 <- normals4[,-4]
+normals4 <- normals4[, -4]
 norm4_dippca <- clusterabilitytest(normals4, "dip")
 norm4_dipdist <- clusterabilitytest(normals4, "dip", reduction = "distance", distance_standardize = "NONE")
 norm4_silvpca <- clusterabilitytest(normals4, "silverman", s_setseed = 123)
@@ -123,7 +121,7 @@ print(norm4_silvspcaVP)
 
 # Normals5 - results
 data(normals5)
-normals5 <- normals5[,-4]
+normals5 <- normals5[, -4]
 norm5_dippca <- clusterabilitytest(normals5, "dip")
 norm5_dipdist <- clusterabilitytest(normals5, "dip", reduction = "distance", distance_standardize = "NONE")
 norm5_silvpca <- clusterabilitytest(normals5, "silverman", s_setseed = 123, s_digits = 20)
@@ -174,7 +172,7 @@ print(cars_silvspcaVP)
 
 # iris - results
 data(iris)
-newiris <- iris[,c(1:4)]
+newiris <- iris[, c(1:4)]
 iris_dippca <- clusterabilitytest(newiris, "dip")
 iris_dipdist <- clusterabilitytest(newiris, "dip", reduction = "distance", distance_standardize = "NONE")
 iris_silvpca <- clusterabilitytest(newiris, "silverman", s_setseed = 123)

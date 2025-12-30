@@ -53,7 +53,6 @@ test_that("validate_reduction", {
   expect_warning(validate_reduction("jalks"), "PCA")
   expect_warning(validate_reduction(NULL), "PCA")
   expect_warning(validate_reduction(blah), "PCA")
-
 })
 
 test_that("validate_isdistmatrix", {
@@ -70,7 +69,6 @@ test_that("validate_isdistmatrix", {
   expect_error(validate_isdistmatrix(TRUE, "PCA", data1))
   expect_error(validate_isdistmatrix(TRUE, "DiStAnCE", data1))
   expect_error(validate_isdistmatrix(TRUE, "NONE", data2))
-
 })
 
 test_that("validate_standardize", {
@@ -90,7 +88,7 @@ test_that("validate_pca_center", {
   expect_false(validate_pca_center(F))
   expect_false(validate_pca_center(FALSE))
 
-  expect_true(suppressWarnings(validate_pca_center(blah)))  # Default value is TRUE
+  expect_true(suppressWarnings(validate_pca_center(blah))) # Default value is TRUE
 
   expect_warning(validate_pca_center(true))
   expect_warning(validate_pca_center("TRUE"))
@@ -260,4 +258,3 @@ test_that("validate_ssetseed", {
   expect_warning(validate_ssetseed(blah), "s_setseed")
   expect_warning(validate_ssetseed("1"), "s_setseed")
 })
-

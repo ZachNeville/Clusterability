@@ -3,7 +3,7 @@ library(clusterability)
 
 test_that("print - errors", {
   iris1 <- data(iris)
-  iris1 <- iris[,1:4]
+  iris1 <- iris[, 1:4]
 
   cresult <- clusterabilitytest(iris1, test = "Dip", reduction = "PCA")
 
@@ -12,12 +12,12 @@ test_that("print - errors", {
 
 test_that("print - conditionals", {
   iris1 <- data(iris)
-  iris1 <- iris[,1:4]
+  iris1 <- iris[, 1:4]
 
   miss <- matrix(c(1, 5, 8, NA, 2, 3, 8, 7, 9, 4, 2, 4, 6, 9, 11, 4, 13, 5, 6, 1, 0), ncol = 3)
 
   cresult <- clusterabilitytest(iris1, test = "Dip", reduction = "PCA", d_simulatepvalue = TRUE, d_reps = 500)
-  missresult <- clusterabilitytest(miss, test = "Silverman", reduction = "distance",distance_metric = "euclidean", distance_standardize = "STD", s_m = 1422, s_digits = 7, s_setseed = 1234, s_outseed = TRUE, completecase = TRUE)
+  missresult <- clusterabilitytest(miss, test = "Silverman", reduction = "distance", distance_metric = "euclidean", distance_standardize = "STD", s_m = 1422, s_digits = 7, s_setseed = 1234, s_outseed = TRUE, completecase = TRUE)
 
   basicdip <- clusterabilitytest(iris1, test = "dip")
   basicsilv <- clusterabilitytest(iris1, test = "silverman")
@@ -38,7 +38,7 @@ test_that("print - conditionals", {
 
   # Test name
   expect_output(print.clusterability(cresult), "Dip Test")
-  expect_output(print.clusterability(missresult),  "Silverman")
+  expect_output(print.clusterability(missresult), "Silverman")
 
   # Null and Alternative
   expect_output(print.clusterability(cresult), "Null Hypothesis")

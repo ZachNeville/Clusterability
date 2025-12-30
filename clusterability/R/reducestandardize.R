@@ -27,8 +27,8 @@ performpca <- function(x, center, scale) {
   # This should ensure consistent results across machines and between SAS and R implementations,
   # assuming the variables are ordered the same.
 
-  if(pcaresult$rotation[1, 1] < 0) {
-   return(-1 * pcaresult$x[, 1])
+  if (pcaresult$rotation[1, 1] < 0) {
+    return(-1 * pcaresult$x[, 1])
   } else {
     return(pcaresult$x[, 1])
   }
@@ -36,7 +36,7 @@ performpca <- function(x, center, scale) {
 
 
 performspca.sparsepca <- function(x, center, scale, alpha, beta) {
-  spcaresult <- sparsepca::spca(x, k=1, alpha=alpha, beta=beta, center = center, scale = scale, verbose=0)
+  spcaresult <- sparsepca::spca(x, k = 1, alpha = alpha, beta = beta, center = center, scale = scale, verbose = 0)
 
   # Because different machines or implementations of sparse PCA can yield
   # differently signed rotation matrices, and thus scores,
@@ -51,10 +51,10 @@ performspca.sparsepca <- function(x, center, scale, alpha, beta) {
   # if( !is.na(first.nonzero.loading) & first.nonzero.loading < 0)
 
 
-  if(spcaresult$loadings[1, 1] < 0) {
-    return(-1 * spcaresult$scores[,1])
+  if (spcaresult$loadings[1, 1] < 0) {
+    return(-1 * spcaresult$scores[, 1])
   } else {
-    return(spcaresult$scores[,1])
+    return(spcaresult$scores[, 1])
   }
 }
 
@@ -66,10 +66,12 @@ performspca.sparsepca <- function(x, center, scale, alpha, beta) {
 performspca.elasticnet <- function(x, para, lambda) {
   # elasticnet spca uses its own rules for centering and scaling.
 
-  sparse="penalty"
-  spcaresult <- elasticnet::spca(x, 1, para, type="predictor",
-       sparse=sparse, use.corr=FALSE, lambda=lambda,
-       max.iter=200, trace=FALSE, eps.conv=1e-3)
+  sparse <- "penalty"
+  spcaresult <- elasticnet::spca(x, 1, para,
+    type = "predictor",
+    sparse = sparse, use.corr = FALSE, lambda = lambda,
+    max.iter = 200, trace = FALSE, eps.conv = 1e-3
+  )
   # Because different machines or implementations of sparse PCA can yield
   # differently signed rotation matrices, and thus scores,
   # we multiply all scores by -1 if the first loading is negative.
@@ -83,10 +85,10 @@ performspca.elasticnet <- function(x, para, lambda) {
   # if( !is.na(first.nonzero.loading) & first.nonzero.loading < 0)
 
   scores <- x %*% spcaresult$loadings
-  if(spcaresult$loadings[1, 1] < 0) {
-    return(-1 * scores[,1])
+  if (spcaresult$loadings[1, 1] < 0) {
+    return(-1 * scores[, 1])
   } else {
-    return(scores[,1])
+    return(scores[, 1])
   }
 }
 
@@ -118,7 +120,6 @@ computedistances <- function(x, method) {
   if (is_dist_default) {
     distresult <- as.vector(stats::dist(x = x, method = method))
   } else if (is_minkowski) {
-
     # Strip out the unnecessary parts to get the "p"
     pattern1 <- "minkowski\\("
     pattern2 <- "\\)"
@@ -127,13 +128,13 @@ computedistances <- function(x, method) {
     minkowski_p <- as.numeric(sub(pattern2, "", out1))
 
     distresult <- as.vector(stats::dist(x = x, method = "minkowski", p = minkowski_p))
-
   } else {
     distresult <- switch(method,
-           "sqeuc" = dist_sqeuc(x),
-           "corr" = dist_corr(x),
-           "cov" = dist_cov(x),
-           "sqcorr" = dist_sqcorr(x))
+      "sqeuc" = dist_sqeuc(x),
+      "corr" = dist_corr(x),
+      "cov" = dist_cov(x),
+      "sqcorr" = dist_sqcorr(x)
+    )
   }
 
   return(distresult)
@@ -149,10 +150,11 @@ standardizedata <- function(x, method) {
   # http://documentation.sas.com/?cdcId=pgmsascdc&cdcVersion=9.4_3.3&docsetId=statug&docsetTarget=statug_stdize_details01.htm&locale=en
 
   result <- switch(method,
-                   "STD" = scale(x),
-                   "NONE" = x,
-                   "MEAN" = apply(x, 2, function(x) (x - mean(x))),
-                   "MEDIAN" = apply(x, 2, function(x) (x - stats::median(x))))
+    "STD" = scale(x),
+    "NONE" = x,
+    "MEAN" = apply(x, 2, function(x) (x - mean(x))),
+    "MEDIAN" = apply(x, 2, function(x) (x - stats::median(x)))
+  )
 
   if (any(is.nan(result))) {
     warning("NaN values occurred during standardization. One possible cause is that the data contains a variable which is constant. No standardization was performed.")
@@ -177,8 +179,8 @@ countmiss <- function(x) {
 dist_corr <- function(x) {
   # Matches SAS
   # Validation handled in validate_metric(). Cannot have 1-dimensional data
-  numerator <- ( (x - rowMeans(x)) %*% t(x - rowMeans(x)) )
-  denominator <- rowSums( (x - rowMeans(x))^2) %*% t(rowSums((x - rowMeans(x))^2) )
+  numerator <- ((x - rowMeans(x)) %*% t(x - rowMeans(x)))
+  denominator <- rowSums((x - rowMeans(x))^2) %*% t(rowSums((x - rowMeans(x))^2))
 
   if (any(denominator == 0)) {
     stop("One or more constant observations were found in the data set. When using distance_metric = 'corr', the data must not contain constant observations. ")
@@ -194,7 +196,7 @@ dist_cov <- function(x) {
   # Validation handled in validate_metric(). Cannot have df = 0
   # This is a similarity metric, not a distance metric.
   df <- dim(x)[2] - 1
-  fullmat <- 1/df * ((x - rowMeans(x)) %*% t(x - rowMeans(x)))
+  fullmat <- 1 / df * ((x - rowMeans(x)) %*% t(x - rowMeans(x)))
   return(fullmat[lower.tri(fullmat)])
 }
 
@@ -211,7 +213,7 @@ dist_sqcorr <- function(x) {
 
 get_lower_triangle <- function(x) {
   # Return the lower triangular portion of a distance matrix
-  if(NROW(x) != NCOL(x)){
+  if (NROW(x) != NCOL(x)) {
     stop("When using the 'is_dist_matrix' argument, the 'data' argument must be a square matrix.")
   }
   return(x[lower.tri(x)])

@@ -22,12 +22,11 @@ library(clusterability)
 library(bench)
 ntimes <- 10
 
-testandprint <- function(data, test, reduction, seed, spca_method="EN") {
-
-  if(test == "dip"){
-    benchmarkResult <- bench::mark(clusterabilitytest(data, "dip", reduction, spca_method=spca_method), min_iterations = ntimes)
-  } else if(test == "silverman") {
-    benchmarkResult <- bench::mark(clusterabilitytest(data, "silverman", reduction, spca_method=spca_method, distance_standardize = "NONE", s_setseed = seed), min_iterations = ntimes)
+testandprint <- function(data, test, reduction, seed, spca_method = "EN") {
+  if (test == "dip") {
+    benchmarkResult <- bench::mark(clusterabilitytest(data, "dip", reduction, spca_method = spca_method), min_iterations = ntimes)
+  } else if (test == "silverman") {
+    benchmarkResult <- bench::mark(clusterabilitytest(data, "silverman", reduction, spca_method = spca_method, distance_standardize = "NONE", s_setseed = seed), min_iterations = ntimes)
   } else {
     stop("Invalid test")
   }
@@ -37,7 +36,7 @@ testandprint <- function(data, test, reduction, seed, spca_method="EN") {
 
 ##### normals1 #####
 data(normals1)
-normals1 <- normals1[,-3]
+normals1 <- normals1[, -3]
 testandprint(normals1, "dip", "pca", NULL)
 testandprint(normals1, "dip", "distance", NULL)
 testandprint(normals1, "silverman", "pca", 123)
@@ -50,7 +49,7 @@ testandprint(normals1, "silverman", "spca", 123, "VP")
 
 ##### normals2 #####
 data(normals2)
-normals2 <- normals2[,-3]
+normals2 <- normals2[, -3]
 testandprint(normals2, "dip", "pca", NULL)
 testandprint(normals2, "dip", "distance", NULL)
 testandprint(normals2, "silverman", "pca", 123)
@@ -63,7 +62,7 @@ testandprint(normals2, "silverman", "spca", 123, "VP")
 
 ##### normals3 #####
 data(normals3)
-normals3 <- normals3[,-3]
+normals3 <- normals3[, -3]
 testandprint(normals3, "dip", "pca", NULL)
 testandprint(normals3, "dip", "distance", NULL)
 testandprint(normals3, "silverman", "pca", 123)
@@ -77,7 +76,7 @@ testandprint(normals3, "silverman", "spca", 123, "VP")
 
 ##### normals4 #####
 data(normals4)
-normals4 <- normals4[,-4]
+normals4 <- normals4[, -4]
 testandprint(normals4, "dip", "pca", NULL)
 testandprint(normals4, "dip", "distance", NULL)
 testandprint(normals4, "silverman", "pca", 123)
@@ -90,7 +89,7 @@ testandprint(normals4, "silverman", "spca", 123, "VP")
 
 ##### normals5 #####
 data(normals5)
-normals5 <- normals5[,-4]
+normals5 <- normals5[, -4]
 testandprint(normals5, "dip", "pca", NULL)
 testandprint(normals5, "dip", "distance", NULL)
 testandprint(normals5, "silverman", "pca", 123)
@@ -116,7 +115,7 @@ testandprint(cars, "silverman", "spca", 123, "VP")
 
 ##### iris #####
 data(iris)
-iris_numeric <- iris[,c(1:4)]
+iris_numeric <- iris[, c(1:4)]
 testandprint(iris_numeric, "dip", "pca", NULL)
 testandprint(iris_numeric, "dip", "distance", NULL)
 testandprint(iris_numeric, "silverman", "pca", 123)

@@ -73,7 +73,7 @@
 #' ### Quick start ###
 #' # Load data and remove Species
 #' data(iris)
-#' iris_num <- iris[,-5]
+#' iris_num <- iris[, -5]
 #' plot(iris_num)
 #'
 #' # Run test using default options
@@ -82,7 +82,7 @@
 #' # Print results
 #' print(clust_result)
 #'
-#'\donttest{
+#' \donttest{
 #' ### Longer Example: Specifying Parameters ###
 #' # Load data and plot to visualize
 #' data(normals2)
@@ -90,11 +90,14 @@
 #'
 #' # Using Silverman's test, pairwise distances to reduce dimension,
 #' # 1,000 bootstrap replicates, with an RNG seed of 12345
-#' clust_result2 <- clusterabilitytest(normals2, "silverman", reduction = "distance",
-#'      s_m = 1000, s_setseed = 12345)
+#' clust_result2 <- clusterabilitytest(normals2, "silverman",
+#'   reduction = "distance",
+#'   s_m = 1000, s_setseed = 12345
+#' )
 #'
 #' # Print result
-#' print(clust_result2)}
+#' print(clust_result2)
+#' }
 #'
 #' @references Hall, P. and York, M., 2001. On the calibration of Silverman's test for multimodality. Statistica Sinica, pp.515-536.
 #'
@@ -106,14 +109,13 @@
 #'
 #' @export
 clusterabilitytest <- function(data, test, reduction = "pca", distance_metric = "euclidean",
-                                distance_standardize = "std", pca_center = TRUE, pca_scale = TRUE,
-                                spca_method = "EN",
-                                spca_EN_para = 0.01, spca_EN_lambda = 1e-6,
-                                spca_VP_center = TRUE, spca_VP_scale = TRUE,
-                                spca_VP_alpha = 1e-3 , spca_VP_beta = 1e-3,
-                                is_dist_matrix = FALSE, completecase = FALSE, d_simulatepvalue = FALSE,
-                                d_reps = 2000, s_m = 999, s_adjust = TRUE, s_digits = 6, s_setseed = NULL, s_outseed = FALSE) {
-
+                               distance_standardize = "std", pca_center = TRUE, pca_scale = TRUE,
+                               spca_method = "EN",
+                               spca_EN_para = 0.01, spca_EN_lambda = 1e-6,
+                               spca_VP_center = TRUE, spca_VP_scale = TRUE,
+                               spca_VP_alpha = 1e-3, spca_VP_beta = 1e-3,
+                               is_dist_matrix = FALSE, completecase = FALSE, d_simulatepvalue = FALSE,
+                               d_reps = 2000, s_m = 999, s_adjust = TRUE, s_digits = 6, s_setseed = NULL, s_outseed = FALSE) {
   # Get name of data set
   dataname <- deparse(substitute(data))
 
@@ -135,7 +137,7 @@ clusterabilitytest <- function(data, test, reduction = "pca", distance_metric = 
   spca_method <- validate_spca_method(spca_method)
   spca_VP_center <- validate_spca_VP_center(spca_VP_center)
   spca_VP_scale <- validate_spca_VP_scale(spca_VP_scale)
-  #todo check vp_alpha vp_beta en_para en_lambda
+  # todo check vp_alpha vp_beta en_para en_lambda
 
   is_dist_matrix <- validate_isdistmatrix(is_dist_matrix, reduction, data)
   distance_metric <- validate_metric(distance_metric, data)
@@ -154,7 +156,7 @@ clusterabilitytest <- function(data, test, reduction = "pca", distance_metric = 
   # Get complete cases
   if (completecase) {
     data <- getcompletecases(data)
-  } else if(nmiss > 0) {
+  } else if (nmiss > 0) {
     stop("Missing data was found in the data set and the 'completecase' parameter was not set to TRUE. The Dip and Silverman tests cannot be performed if there is missing data.")
   }
 
@@ -167,12 +169,16 @@ clusterabilitytest <- function(data, test, reduction = "pca", distance_metric = 
   if (identical(reduction, "PCA")) {
     data <- performpca(data, pca_center, pca_scale)
   } else if (identical(reduction, "SPCA")) {
-    if(identical(spca_method, "VP")) {
-      data <- performspca.sparsepca(data, spca_VP_center,
-                          spca_VP_scale, spca_VP_alpha, spca_VP_beta)
-    } else if(identical(spca_method, "EN")) {
+    if (identical(spca_method, "VP")) {
+      data <- performspca.sparsepca(
+        data, spca_VP_center,
+        spca_VP_scale, spca_VP_alpha, spca_VP_beta
+      )
+    } else if (identical(spca_method, "EN")) {
       data <- performspca.elasticnet(data, spca_EN_para, spca_EN_lambda)
-    } else {stop("Supported SPCA methods are: VP and EN ");}
+    } else {
+      stop("Supported SPCA methods are: VP and EN ")
+    }
   } else if (identical(reduction, "DISTANCE")) {
     data <- computedistances(data, distance_metric)
   } else if (is_dist_matrix) {
@@ -207,11 +213,9 @@ clusterabilitytest <- function(data, test, reduction = "pca", distance_metric = 
     arglist$spca_VP_beta <- spca_VP_beta
     arglist$spca_EN_para <- spca_EN_para
     arglist$spca_EN_lambda <- spca_EN_lambda
-
   }
 
   if (identical(test, "DIP")) {
-
     arglist$simulatepvalues <- d_simulatepvalue
 
     if (d_simulatepvalue) {
@@ -243,16 +247,13 @@ clusterabilitytest <- function(data, test, reduction = "pca", distance_metric = 
     if (s_outseed) {
       arglist$rngstate <- silvresult$saved_seed
     }
-
   }
 
   clustobj$arglist <- arglist
   clustobj$datainfo <- datainfo
 
   return(clusterability(clustobj))
-
 }
-
 
 
 #' Print a clusterability object
@@ -267,9 +268,10 @@ print.clusterability <- function(x, ...) {
   # The ... is necessary because the generic print() has it
 
   correct_class <- tryCatch(identical(class(x), "clusterability"),
-                           error = function(msg) stop("This function is only meant to print 'clusterability' objects"))
+    error = function(msg) stop("This function is only meant to print 'clusterability' objects")
+  )
 
-  if(!correct_class) {
+  if (!correct_class) {
     stop("This function is only meant to print 'clusterability' objects")
   }
 
@@ -281,52 +283,52 @@ print.clusterability <- function(x, ...) {
   cat(paste("Data set name: ", x$arglist$data, "\n", sep = ""))
   cat(paste("Your data set has", x$datainfo$numobs, "observation(s) and", x$datainfo$numvar, "variable(s).\n", sep = " "))
 
-  if(x$datainfo$missingobs > 0){
-    cat(paste('WARNING: Of these,', x$datainfo$missingobs, 'observation(s) is/are missing at least one variable value.\n\n', sep = ' '))
+  if (x$datainfo$missingobs > 0) {
+    cat(paste("WARNING: Of these,", x$datainfo$missingobs, "observation(s) is/are missing at least one variable value.\n\n", sep = " "))
   } else {
-    cat('There were no missing values. Your data set is complete.\n\n')
+    cat("There were no missing values. Your data set is complete.\n\n")
   }
 
 
   # Reduction method
-  if(identical(x$arglist$reduction, "DISTANCE")) {
+  if (identical(x$arglist$reduction, "DISTANCE")) {
     cat("Data Reduced Using: Pairwise Distances\n")
     cat(paste("Distance Metric:", x$arglist$distance_metric, "\n", sep = " "))
-    if(!identical(x$arglist$distance_standardize, "NONE")) {
+    if (!identical(x$arglist$distance_standardize, "NONE")) {
       cat(paste("Standardization Method Used:", x$arglist$distance_standardize, "\n", sep = " "))
 
       std_description <- switch(toupper(x$arglist$distance_standardize),
-                                "STD" = "Data is standardized so that each variable has mean 0 and standard deviation 1.",
-                                "MEAN" = "Each variable is centered around its mean. In other words, the mean - after standardization - is 0, and the standard deviation is unchanged.",
-                                "MEDIAN" = "Each variable is centered around its median. The median - after standardization - is 0, and the standard deviation is unchanged."
-                                )
+        "STD" = "Data is standardized so that each variable has mean 0 and standard deviation 1.",
+        "MEAN" = "Each variable is centered around its mean. In other words, the mean - after standardization - is 0, and the standard deviation is unchanged.",
+        "MEDIAN" = "Each variable is centered around its median. The median - after standardization - is 0, and the standard deviation is unchanged."
+      )
 
       cat(paste("\t", std_description, sep = " ")) # description
     }
     cat("\n")
-  } else if(identical(toupper(x$arglist$reduction), 'PCA')) {
-    cat('Data Reduced Using: PCA\n')
-  }  else if(identical(toupper(x$arglist$reduction), 'SPCA')) {
-    cat('Data Reduced Using: SPCA\n')
+  } else if (identical(toupper(x$arglist$reduction), "PCA")) {
+    cat("Data Reduced Using: PCA\n")
+  } else if (identical(toupper(x$arglist$reduction), "SPCA")) {
+    cat("Data Reduced Using: SPCA\n")
   }
 
   # Test name and results
-  if(identical(x$arglist$test, "DIP")) {
+  if (identical(x$arglist$test, "DIP")) {
     cat("\n-----------------------------------------\n")
     cat("Results: Dip Test of Unimodality\n")
     cat("-----------------------------------------\n\n")
     cat("Null Hypothesis: number of modes = 1\n")
     cat("Alternative Hypothesis: number of modes > 1\n")
-    cat(paste("p-value:", x$pvalue, "\n", sep=" "))
-    cat(paste("Dip statistic:", x$dipstatistic, "\n\n", sep=" "))
-  } else if(identical(x$arglist$test, "SILVERMAN")) {
+    cat(paste("p-value:", x$pvalue, "\n", sep = " "))
+    cat(paste("Dip statistic:", x$dipstatistic, "\n\n", sep = " "))
+  } else if (identical(x$arglist$test, "SILVERMAN")) {
     cat("\n----------------------------------------------\n")
     cat("Results: Silverman's Critical Bandwidth Test\n")
     cat("----------------------------------------------\n\n")
-    cat(paste("Null Hypothesis: number of modes <=", x$k, "\n",  sep=" "))
+    cat(paste("Null Hypothesis: number of modes <=", x$k, "\n", sep = " "))
     cat(paste("Alternative Hypothesis: number of modes >", x$k, "\n", sep = " "))
-    cat(paste("p-value:", x$pvalue, "\n", sep=" "))
-    cat(paste("Critical bandwidth:", x$critbw, "\n\n", sep=" "))
+    cat(paste("p-value:", x$pvalue, "\n", sep = " "))
+    cat(paste("Critical bandwidth:", x$critbw, "\n\n", sep = " "))
   }
 
   # Test options used
@@ -334,29 +336,27 @@ print.clusterability <- function(x, ...) {
   cat("Test Options Used\n")
   cat("---------------------\n\n")
 
-  if(identical(x$arglist$test, "DIP")) {
-    if(x$arglist$simulatepvalues) {
+  if (identical(x$arglist$test, "DIP")) {
+    if (x$arglist$simulatepvalues) {
       cat(paste("p values obtained from a Monte Carlo simulation with", x$arglist$reps, "replicates\n", sep = " "))
       nooptions <- FALSE
     } else {
       cat("Default values for the optional parameters were used. To learn more about customizing the behavior of the clusterabilitytest, please see the R documentation.")
     }
-  } else if(identical(x$arglist$test, "SILVERMAN")) {
-
-    if(!is.null(x$arglist$rngseed)) {
+  } else if (identical(x$arglist$test, "SILVERMAN")) {
+    if (!is.null(x$arglist$rngseed)) {
       cat(paste("Seed set in R to:", x$arglist$rngseed, "\n", sep = " "))
     }
 
     cat(paste("p value based on", x$arglist$reps, "bootstrap replicates\n", sep = " "))
 
-    if(x$arglist$adjustpval) {
+    if (x$arglist$adjustpval) {
       cat("Adjusted p-values based on the adjustment in Hall and York (2001)\n")
     }
 
-    if(x$arglist$adjustpval && x$k == 1) {
+    if (x$arglist$adjustpval && x$k == 1) {
       cat(paste("p value rounded to:", x$arglist$digits, "digits\n", sep = " "))
     }
-
   }
 }
 

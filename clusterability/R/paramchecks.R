@@ -18,17 +18,18 @@
 
 # Validates the data provided
 validate_data <- function(d, dname) {
-
-  isnullmiss <- tryCatch(isTRUE(is.null(d)), error = function(e) return(TRUE))
-  if(isnullmiss) {
+  isnullmiss <- tryCatch(isTRUE(is.null(d)), error = function(e) {
+    return(TRUE)
+  })
+  if (isnullmiss) {
     stop(paste("The dataset", dname, "is NULL or is invalid."))
   }
 
-  if(NROW(d) == 0) {
+  if (NROW(d) == 0) {
     stop(paste("The dataset", dname, "has 0 rows."))
   }
 
-  if(NCOL(d) == 0) {
+  if (NCOL(d) == 0) {
     stop(paste("The dataset", dname, "has 0 columns."))
   }
 }
@@ -38,9 +39,11 @@ validate_data <- function(d, dname) {
 validate_test <- function(test) {
   valid_test <- c("DIP", "SILVERMAN")
 
-  isvalid <- tryCatch(isTRUE((!is.null(test) & (toupper(test) %in% valid_test))), error = function(e) return(FALSE))
+  isvalid <- tryCatch(isTRUE((!is.null(test) & (toupper(test) %in% valid_test))), error = function(e) {
+    return(FALSE)
+  })
 
-  if(isvalid) {
+  if (isvalid) {
     return(toupper(test))
   } else {
     stop("Invalid 'test' argument was specified. The 'test' must be either \"dip\" or \"silverman\"")
@@ -49,7 +52,9 @@ validate_test <- function(test) {
 
 # Validates the 'distance_metric' parameter and returns a lowercase version of it.
 validate_metric <- function(metric, x) {
-  isnullmiss <- tryCatch(isTRUE(is.null(metric)), error = function(e) return(TRUE))
+  isnullmiss <- tryCatch(isTRUE(is.null(metric)), error = function(e) {
+    return(TRUE)
+  })
 
   if (isnullmiss) {
     warning("Invalid distance metric was entered. The default metric (\"euclidean\") will be used. Please see the help file for a list of valid metrics.")
@@ -85,7 +90,6 @@ validate_metric <- function(metric, x) {
         warning("Invalid value for p was entered when using the Minkowski metric. p must be a positive number. The default value of 2 will be used.")
         return("minkowski(2)")
       }
-
     } else {
       warning("Invalid distance metric was entered. The default metric (\"euclidean\") will be used. Please see the help file for a list of valid metrics.")
       return("euclidean")
@@ -97,12 +101,14 @@ validate_metric <- function(metric, x) {
 validate_reduction <- function(reduction) {
   valid_reduction <- c("PCA", "SPCA", "DISTANCE", "NONE")
   isvalid <- tryCatch(isTRUE((!is.null(reduction) & (toupper(reduction) %in% valid_reduction))),
-                      error = function(e) return(FALSE))
+    error = function(e) {
+      return(FALSE)
+    }
+  )
 
-  if(isvalid) {
+  if (isvalid) {
     return(toupper(reduction))
-  }
-  else {
+  } else {
     warning("Invalid reduction method was used. No reduction was performed. The 'reduction' argument must be \"PCA\", \"SPCA\", \"DISTANCE\", or \"NONE\"")
     return("NONE")
   }
@@ -110,12 +116,12 @@ validate_reduction <- function(reduction) {
 
 # Validates the 'is_dist_matrix' argument and returns its value
 validate_isdistmatrix <- function(is_dist_matrix, reduction, data) {
-  if(validate_boolean(is_dist_matrix, "is_dist_matrix", FALSE)) {
-    if(!identical(reduction, "NONE")) {
+  if (validate_boolean(is_dist_matrix, "is_dist_matrix", FALSE)) {
+    if (!identical(reduction, "NONE")) {
       stop("When providing a value of TRUE for the 'is_dist_matrix' argument, the 'reduction' argument must be \"NONE\".")
-    } else if (!isSymmetric(as.matrix(data), check.attributes = FALSE)){
-		stop("When providing a value of TRUE for the 'is_dist_matrix' argument, the dataset must be a symmetric matrix.")
-	} else {
+    } else if (!isSymmetric(as.matrix(data), check.attributes = FALSE)) {
+      stop("When providing a value of TRUE for the 'is_dist_matrix' argument, the dataset must be a symmetric matrix.")
+    } else {
       return(TRUE)
     }
   } else {
@@ -128,7 +134,10 @@ validate_isdistmatrix <- function(is_dist_matrix, reduction, data) {
 validate_standardize <- function(standard) {
   valid_stdize <- c("STD", "NONE", "MEAN", "MEDIAN")
   isvalid <- tryCatch(isTRUE((!is.null(standard) & (toupper(standard) %in% valid_stdize))),
-                      error = function(e) return(FALSE))
+    error = function(e) {
+      return(FALSE)
+    }
+  )
 
   if (isvalid) {
     return(toupper(standard))
@@ -148,17 +157,18 @@ validate_pca_scale <- function(scale) {
 }
 
 
-
 # Validates the 'spca_method' argument and returns an uppercase version of it
 validate_spca_method <- function(spca_method) {
   valid_spca_method <- c("EN", "VP")
   isvalid <- tryCatch(isTRUE((!is.null(spca_method) & (toupper(spca_method) %in% valid_spca_method))),
-                      error = function(e) return(FALSE))
+    error = function(e) {
+      return(FALSE)
+    }
+  )
 
-  if(isvalid) {
+  if (isvalid) {
     return(toupper(spca_method))
-  }
-  else {
+  } else {
     stop("Invalid spca method was used. The 'spca_method' argument must be \"EN\" or \"VP\"")
   }
 }
@@ -193,7 +203,10 @@ validate_soutseed <- function(souts) {
 
 validate_dreps <- function(d) {
   isvalid <- tryCatch(isTRUE((!is.null(d) & is.numeric(d) & (d >= 1) & ((d %% 1) == 0))),
-                      error = function(e) return(FALSE))
+    error = function(e) {
+      return(FALSE)
+    }
+  )
 
   if (isvalid) {
     return(d)
@@ -205,7 +218,10 @@ validate_dreps <- function(d) {
 
 validate_sk <- function(sk) {
   isvalid <- tryCatch(isTRUE((!is.null(sk) & is.numeric(sk) & (sk >= 1) & ((sk %% 1) == 0))),
-                      error = function(e) return(FALSE))
+    error = function(e) {
+      return(FALSE)
+    }
+  )
 
   if (isvalid) {
     return(sk)
@@ -217,7 +233,10 @@ validate_sk <- function(sk) {
 
 validate_sm <- function(sm) {
   isvalid <- tryCatch(isTRUE((!is.null(sm) & is.numeric(sm) & (sm >= 1) & ((sm %% 1) == 0))),
-                      error = function(e) return(FALSE))
+    error = function(e) {
+      return(FALSE)
+    }
+  )
 
   if (isvalid) {
     return(sm)
@@ -229,7 +248,10 @@ validate_sm <- function(sm) {
 
 validate_sdigits <- function(sd) {
   isvalid <- tryCatch(isTRUE((!is.null(sd) & is.numeric(sd) & (sd >= 1) & ((sd %% 1) == 0))),
-                      error = function(e) return(FALSE))
+    error = function(e) {
+      return(FALSE)
+    }
+  )
 
   if (isvalid) {
     return(sd)
@@ -242,9 +264,14 @@ validate_sdigits <- function(sd) {
 validate_ssetseed <- function(seed) {
   # Note that NULL is the default so it should still be allowed
   isinteger <- tryCatch(isTRUE((is.numeric(seed) & (seed %% 1 == 0))),
-                      error = function(e) return(FALSE))
+    error = function(e) {
+      return(FALSE)
+    }
+  )
 
-  isnull <- tryCatch(is.null(seed), error = function(e) return(FALSE))
+  isnull <- tryCatch(is.null(seed), error = function(e) {
+    return(FALSE)
+  })
 
   if (isinteger | isnull) {
     return(seed)
@@ -258,7 +285,10 @@ validate_ssetseed <- function(seed) {
 # Used for validation of any boolean type. There are several so this reduces need for repetition
 validate_boolean <- function(var, name, default) {
   islogical <- tryCatch(identical(typeof(var), "logical"),
-                        error = function(errmsg) return(FALSE))
+    error = function(errmsg) {
+      return(FALSE)
+    }
+  )
 
   if (islogical) {
     return(var)
