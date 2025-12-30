@@ -187,9 +187,9 @@ clusterabilitytest <- function(data, test, reduction = "pca", distance_metric = 
 
   # Run the test
   if (identical(test, "DIP")) {
-    dipresult <- dip(data, d_simulatepvalue, d_reps)
+    dipresult <- perform_dip_test(data, d_simulatepvalue, d_reps)
   } else {
-    silvresult <- silverman(as.matrix(data), s_k, s_m, s_adjust, s_digits, s_setseed)
+    silvresult <- perform_silverman_test(as.matrix(data), s_k, s_m, s_adjust, s_digits, s_setseed)
   }
 
 
