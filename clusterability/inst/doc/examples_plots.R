@@ -1,6 +1,6 @@
 # Code to produce plots for the clusterability package
 
-# Copyright (C) 2025  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
+# Copyright (C) 2026  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -126,7 +126,7 @@ data(iris)
 iris <- iris[, -5]
 par(mar = c(5, 5, 2, 2))
 
-irispca <- clusterability:::performpca(iris, TRUE, TRUE)
+irispca <- clusterability:::perform_pca(iris, TRUE, TRUE)
 
 hist(irispca, col = col2, main = "iris", xlab = "Score of First Principal Component", ylab = "Frequency", cex.main = 1.5, cex.axis = 1, cex.lab = 1.25)
 
@@ -134,7 +134,7 @@ irisdist <- as.vector(dist(iris))
 
 hist(irisdist, col = col3, main = "iris", xlab = "Pairwise Distance", ylab = "Frequency", cex.main = 1.5, cex.axis = 1, cex.lab = 1.25)
 
-irisspca <- clusterability:::performspca.elasticnet(as.matrix(iris), 0.01, 1e-6)
+irisspca <- clusterability:::perform_spca_elasticnet(as.matrix(iris), 0.01, 1e-6)
 
 hist(irisspca, col = col1, main = "iris", xlab = "Score of First Sparse Principal Component", ylab = "Frequency", cex.main = 1.5, cex.axis = 1, cex.lab = 1.25)
 
@@ -145,7 +145,7 @@ data(cars)
 par(mar = c(5, 5, 2, 2))
 plot(cars, col = "black", pch = sym1, cex = 1.5, cex.main = 1.5, cex.axis = 1, cex.lab = 1.25, main = "cars", pty = "s", bg = col1, xlab = "Speed", ylab = "Distance")
 
-carspca <- clusterability:::performpca(cars, TRUE, TRUE)
+carspca <- clusterability:::perform_pca(cars, TRUE, TRUE)
 
 hist(carspca, col = col1, main = "cars", xlab = "Score of First Principal Component", ylab = "Frequency", cex.main = 1.5, cex.axis = 1, cex.lab = 1.25)
 
@@ -153,6 +153,6 @@ carsdist <- as.vector(dist(cars))
 
 hist(carsdist, col = col2, main = "cars", xlab = "Pairwise Distance", ylab = "Frequency", cex.main = 1.5, cex.axis = 1, cex.lab = 1.25)
 
-carsspca <- clusterability:::performspca.elasticnet(as.matrix(cars), 0.01, 1e-6)
+carsspca <- clusterability:::perform_spca_elasticnet(as.matrix(cars), 0.01, 1e-6)
 
 hist(carsspca, col = col3, main = "cars", xlab = "Score of First Sparse Principal Component", ylab = "Frequency", cex.main = 1.5, cex.axis = 1, cex.lab = 1.25)

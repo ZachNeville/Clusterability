@@ -1,36 +1,36 @@
 context("Reduce Standardize")
 library(clusterability)
 
-test_that("dist_corr", {
+test_that("get_distance_correlation", {
   # Setup
   constdata <- matrix(c(1, 8, 2, 1, 5, 3, 1, 7, 9), ncol = 3)
 
   # Tests
-  expect_error(dist_corr(constdata), info = "Constant data should generate an error.")
+  expect_error(get_distance_correlation(constdata), info = "Constant data should generate an error.")
 })
 
-test_that("dist_sqcorr", {
+test_that("get_distance_squared_correlation", {
   # Setup
   constdata <- matrix(c(1, 8, 2, 1, 5, 3, 1, 7, 9), ncol = 3)
 
   # Tests
-  expect_error(dist_sqcorr(constdata), info = "Constant data should generate an error")
+  expect_error(get_distance_squared_correlation(constdata), info = "Constant data should generate an error")
 })
 
-test_that("standardizedata", {
+test_that("standardize_data", {
   # Setup
   constcol <- matrix(c(1, 1, 1, 4, 6, 10, 9, 5, 3), nrow = 3)
 
   set.seed(1234)
   data2 <- cbind(rnorm(100, 7, 2), rnorm(100, 4, 3))
 
-  noneresult <- standardizedata(data2, "NONE")
-  stdresult <- standardizedata(data2, "STD")
-  meanresult <- standardizedata(data2, "MEAN")
-  medianresult <- standardizedata(data2, "MEDIAN")
+  noneresult <- standardize_data(data2, "NONE")
+  stdresult <- standardize_data(data2, "STD")
+  meanresult <- standardize_data(data2, "MEAN")
+  medianresult <- standardize_data(data2, "MEDIAN")
 
   # Tests - Error handling
-  expect_warning(standardizedata(constcol, "STD"), info = "Warn when constant variable causes NaN's")
+  expect_warning(standardize_data(constcol, "STD"), info = "Warn when constant variable causes NaN's")
 
   # Tests - is the output actually correct?
   expect_equal(colMeans(noneresult), colMeans(data2), tolerance = 1e-14)
@@ -44,38 +44,38 @@ test_that("standardizedata", {
   expect_equal(apply(medianresult, 2, sd), apply(data2, 2, sd), tolerance = 1e-14)
 })
 
-test_that("completecases", {
+test_that("get_complete_cases", {
   # Setup
   test1 <- matrix(c(1, NA, 8, 2, 4, 0, 9, 7, 7), nrow = 3)
   test2 <- matrix(c(1, 4, 8, 2, 4, 0, 9, 7, 7), nrow = 3)
 
   # Test - does it work?
-  expect_equal(nrow(getcompletecases(test1)), 2, info = "getcompletecases removes NA rows")
-  expect_equal(nrow(getcompletecases(test2)), 3, info = "getcompletecases doesn't remove complete rows")
+  expect_equal(nrow(get_complete_cases(test1)), 2, info = "get_complete_cases removes NA rows")
+  expect_equal(nrow(get_complete_cases(test2)), 3, info = "get_complete_cases doesn't remove complete rows")
 })
 
-test_that("computedistances", {
+test_that("compute_pairwise_distances", {
   # Setup
   test2 <- matrix(c(1, 4, 8, 2, 4, 0, 9, 7, 7), nrow = 3)
 
   true_mink <- as.vector(dist(test2, method = "minkowski", p = 2))
   true_euclid <- as.vector(dist(test2, method = "euclidean"))
-  true_corr <- dist_corr(test2)
+  true_corr <- get_distance_correlation(test2)
 
   # Test - does it work? Testing each of the three paths
-  expect_equal(computedistances(test2, "minkowski(2)"), true_mink, tolerance = 1e-14)
-  expect_equal(computedistances(test2, "euclidean"), true_euclid, tolerance = 1e-14)
-  expect_equal(computedistances(test2, "corr"), true_corr, tolerance = 1e-14)
+  expect_equal(compute_pairwise_distances(test2, "minkowski(2)"), true_mink, tolerance = 1e-14)
+  expect_equal(compute_pairwise_distances(test2, "euclidean"), true_euclid, tolerance = 1e-14)
+  expect_equal(compute_pairwise_distances(test2, "corr"), true_corr, tolerance = 1e-14)
 })
 
-test_that("performpca", {
+test_that("perform_pca", {
   # Setup
   test2 <- matrix(c(1, 4, 8, 2, 4, 0, 9, 7, 7), nrow = 3)
 
-  pca_cs <- performpca(test2, TRUE, TRUE)
-  pca_c <- performpca(test2, TRUE, FALSE)
-  pca_s <- performpca(test2, FALSE, TRUE)
-  pca_n <- performpca(test2, FALSE, FALSE)
+  pca_cs <- perform_pca(test2, TRUE, TRUE)
+  pca_c <- perform_pca(test2, TRUE, FALSE)
+  pca_s <- perform_pca(test2, FALSE, TRUE)
+  pca_n <- perform_pca(test2, FALSE, FALSE)
 
   adjustsign <- function(x) {
     if (x$rotation[1, 1] < 0) {
@@ -97,14 +97,14 @@ test_that("performpca", {
   expect_equal(pca_n, tpca_n, tolerance = 1e-14)
 })
 
-test_that("performspca.elasticnet", {
+test_that("perform_spca_elasticnet", {
   # Setup
   test2 <- matrix(c(1, 4, 8, 2, 4, 0, 9, 7, 7), nrow = 3)
 
   para <- 0.01
   lambda <- 1e-6
   sparse <- "penalty"
-  spca <- performspca.elasticnet(test2, para, lambda)
+  spca <- perform_spca_elasticnet(test2, para, lambda)
 
   getscore.adjustsign <- function(x) {
     if (x$loadings[1, 1] < 0) {
@@ -122,16 +122,16 @@ test_that("performspca.elasticnet", {
   expect_equal(spca, tspca, tolerance = 1e-14)
 })
 
-test_that("performspca.sparsepca", {
+test_that("perform_spca_sparsepca", {
   # Setup
   test2 <- matrix(c(1, 4, 8, 2, 4, 0, 9, 7, 7), nrow = 3)
 
   alpha <- 1e-3
   beta <- 1e-3
-  spca_cs <- performspca.sparsepca(test2, TRUE, TRUE, alpha, beta)
-  spca_c <- performspca.sparsepca(test2, TRUE, FALSE, alpha, beta)
-  spca_s <- performspca.sparsepca(test2, FALSE, TRUE, alpha, beta)
-  spca_n <- performspca.sparsepca(test2, FALSE, FALSE, alpha, beta)
+  spca_cs <- perform_spca_sparsepca(test2, TRUE, TRUE, alpha, beta)
+  spca_c <- perform_spca_sparsepca(test2, TRUE, FALSE, alpha, beta)
+  spca_s <- perform_spca_sparsepca(test2, FALSE, TRUE, alpha, beta)
+  spca_n <- perform_spca_sparsepca(test2, FALSE, FALSE, alpha, beta)
 
   adjustsign <- function(x) {
     if (x$loadings[1, 1] < 0) {
@@ -172,5 +172,5 @@ test_that("get_lower_triangle", {
 
   # Unit. Verify get_lower_triangle returns valid result.
   expect_setequal(get_lower_triangle(xdist), xdist[lower.tri(xdist)])
-  expect_setequal(get_lower_triangle(xdist), computedistances(x, "euclidean"))
+  expect_setequal(get_lower_triangle(xdist), compute_pairwise_distances(x, "euclidean"))
 })

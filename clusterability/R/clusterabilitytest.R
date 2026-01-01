@@ -1,5 +1,5 @@
 #' Perform a test of clusterability
-# Copyright (C) 2025  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
+# Copyright (C) 2026  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -126,7 +126,7 @@ clusterabilitytest <- function(data, test, reduction = "pca", distance_metric = 
   data <- as.matrix(data)
   nobs <- NROW(data)
   nvar <- NCOL(data)
-  nmiss <- sum(!stats::complete.cases(data))
+  nmiss <- count_missing_rows(data)
 
   # Validate parameters. Necessary before doing any work.
   # Just validate everything every time
@@ -155,32 +155,32 @@ clusterabilitytest <- function(data, test, reduction = "pca", distance_metric = 
 
   # Get complete cases
   if (completecase) {
-    data <- getcompletecases(data)
+    data <- get_complete_cases(data)
   } else if (nmiss > 0) {
     stop("Missing data was found in the data set and the 'completecase' parameter was not set to TRUE. The Dip and Silverman tests cannot be performed if there is missing data.")
   }
 
   # Perform standardization if using pairwise distances. Even when "NONE" this works.
   if (identical(reduction, "DISTANCE")) {
-    data <- standardizedata(data, distance_standardize)
+    data <- standardize_data(data, distance_standardize)
   }
 
   # Perform dimension reduction if requested
   if (identical(reduction, "PCA")) {
-    data <- performpca(data, pca_center, pca_scale)
+    data <- perform_pca(data, pca_center, pca_scale)
   } else if (identical(reduction, "SPCA")) {
     if (identical(spca_method, "VP")) {
-      data <- performspca.sparsepca(
+      data <- perform_spca_sparsepca(
         data, spca_VP_center,
         spca_VP_scale, spca_VP_alpha, spca_VP_beta
       )
     } else if (identical(spca_method, "EN")) {
-      data <- performspca.elasticnet(data, spca_EN_para, spca_EN_lambda)
+      data <- perform_spca_elasticnet(data, spca_EN_para, spca_EN_lambda)
     } else {
       stop("Supported SPCA methods are: VP and EN ")
     }
   } else if (identical(reduction, "DISTANCE")) {
-    data <- computedistances(data, distance_metric)
+    data <- compute_pairwise_distances(data, distance_metric)
   } else if (is_dist_matrix) {
     data <- get_lower_triangle(data)
   }
