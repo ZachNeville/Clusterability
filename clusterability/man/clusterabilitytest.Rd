@@ -35,6 +35,15 @@ clusterabilitytest(
 
 \item{test}{the test to be performed. Either \code{"dip"} or \code{"silverman"}. See 'Details' section below for how to pick a test.}
 
+\item{reduction}{any dimension reduction that is to be performed.
+\itemize{
+\item{\code{"none"} performs no dimension reduction.}
+\item{\code{"pca"} uses the scores from the first principal component.}
+\item{\code{"spca"} uses the scores from the first sparse principal component.}
+\item{\code{"distance"} computes pairwise distances (using \code{distance_metric} as the metric).}
+}
+For multivariate \code{data}, dimension reduction is required.}
+
 \item{distance_metric}{if applicable, the metric to be used in computing pairwise distances.
 
 The \code{"euclidean"} (default), \code{"maximum", "manhattan", "canberra", "binary"} choices work the same as in \link{dist}. The Minkowski metric is available by providing \code{"minkowski(p)"}.
