@@ -128,31 +128,38 @@ par(mar = c(5, 5, 2, 2))
 
 irispca <- clusterability:::perform_pca(iris, TRUE, TRUE)
 
+dev.new(width = 300, height = 300, unit = "px")
 hist(irispca, col = col2, main = "iris", xlab = "Score of First Principal Component", ylab = "Frequency", cex.main = 1.5, cex.axis = 1, cex.lab = 1.25)
 
 irisdist <- as.vector(dist(iris))
 
+dev.new(width = 300, height = 300, unit = "px")
 hist(irisdist, col = col3, main = "iris", xlab = "Pairwise Distance", ylab = "Frequency", cex.main = 1.5, cex.axis = 1, cex.lab = 1.25)
 
 irisspca <- clusterability:::perform_spca_elasticnet(as.matrix(iris), 0.01, 1e-6)
 
+dev.new(width = 300, height = 300, unit = "px")
 hist(irisspca, col = col1, main = "iris", xlab = "Score of First Sparse Principal Component", ylab = "Frequency", cex.main = 1.5, cex.axis = 1, cex.lab = 1.25)
 
 
 ##### cars #####
 data(cars)
 
+dev.new(width = 300, height = 300, unit = "px")
 par(mar = c(5, 5, 2, 2))
 plot(cars, col = "black", pch = sym1, cex = 1.5, cex.main = 1.5, cex.axis = 1, cex.lab = 1.25, main = "cars", pty = "s", bg = col1, xlab = "Speed", ylab = "Distance")
 
 carspca <- clusterability:::perform_pca(cars, TRUE, TRUE)
 
+dev.new(width = 300, height = 300, unit = "px")
 hist(carspca, col = col1, main = "cars", xlab = "Score of First Principal Component", ylab = "Frequency", cex.main = 1.5, cex.axis = 1, cex.lab = 1.25)
 
 carsdist <- as.vector(dist(cars))
 
+dev.new(width = 300, height = 300, unit = "px")
 hist(carsdist, col = col2, main = "cars", xlab = "Pairwise Distance", ylab = "Frequency", cex.main = 1.5, cex.axis = 1, cex.lab = 1.25)
 
 carsspca <- clusterability:::perform_spca_elasticnet(as.matrix(cars), 0.01, 1e-6)
 
+dev.new(width = 300, height = 300, unit = "px")
 hist(carsspca, col = col3, main = "cars", xlab = "Score of First Sparse Principal Component", ylab = "Frequency", cex.main = 1.5, cex.axis = 1, cex.lab = 1.25)

@@ -3,12 +3,7 @@
 \docType{data}
 \name{normals2}
 \alias{normals2}
-\title{Data generated from a mixture of two multivariate Normal distributions, 2 dimensions.
-A dataset containing 150 observations generated from a mixture of two multivariate
-Normal distributions. 75 observations come from a distribution with mean vector
-(-3, -2) with each variable having unit variance and uncorrelated with each other.
-75 observations come from a distribution with mean vector (1, 1) with each variable
-having unit variance and uncorrelated with each other. The dataset is clusterable.}
+\title{Data generated from a mixture of two multivariate Normal distributions, 2 dimensions.}
 \format{
 A data frame with 150 rows and 3 variables:
 
@@ -22,6 +17,12 @@ A data frame with 150 rows and 3 variables:
 normals2
 }
 \description{
+A dataset containing 150 observations generated from a mixture of two multivariate
+Normal distributions. 75 observations come from a distribution with mean vector
+(-3, -2) with each variable having unit variance and uncorrelated with each other.
+75 observations come from a distribution with mean vector (1, 1) with each variable
+having unit variance and uncorrelated with each other. The dataset is clusterable.
+
 Remove the cluster variable before using the dataset in any tests.
 }
 \keyword{datasets}

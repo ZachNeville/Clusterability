@@ -1,4 +1,4 @@
-# Functions to standardize a data set.
+#' Functions to standardize a data set.
 # Copyright (C) 2026  Zachariah Neville, Naomi Brownstein, Andreas Adolfsson, Margareta Ackerman
 
 # This program is free software; you can redistribute it and/or
@@ -15,8 +15,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-
-# Standardize a data set and return the standardized data
+#' Standardize a data set and return the standardized data
+#' @noRd
 standardize_data <- function(x, method) {
   # NONE = don't do anything
   # STD = mean 0, stdev 1
@@ -25,17 +25,17 @@ standardize_data <- function(x, method) {
   # These match with SAS results
   # http://documentation.sas.com/?cdcId=pgmsascdc&cdcVersion=9.4_3.3&docsetId=statug&docsetTarget=statug_stdize_details01.htm&locale=en
 
-  result <- switch(method,
+  standardized_result <- switch(method,
     "STD" = scale(x),
     "NONE" = x,
     "MEAN" = apply(x, 2, function(x) (x - mean(x))),
     "MEDIAN" = apply(x, 2, function(x) (x - stats::median(x)))
   )
 
-  if (any(is.nan(result))) {
+  if (any(is.nan(standardized_result))) {
     warning("NaN values occurred during standardization. One possible cause is that the data contains a variable which is constant. No standardization was performed.")
     return(x)
   } else {
-    return(result)
+    standardized_result
   }
 }

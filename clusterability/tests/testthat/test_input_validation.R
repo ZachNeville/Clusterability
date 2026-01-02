@@ -1,4 +1,4 @@
-context("Parameter validation")
+context("Input Validation")
 library(clusterability)
 
 test_that("validate_data", {
@@ -193,22 +193,6 @@ test_that("validate_dreps", {
   expect_warning(validate_dreps(NULL), "d_reps", info = "d_reps - NULL is invalid")
   expect_warning(validate_dreps("55"), "d_reps", info = "d_reps - non-numeric is invalid")
   expect_warning(validate_dreps(blah), "d_reps", info = "d_reps - invalid object is invalid")
-})
-
-test_that("validate_sk", {
-  # Valid inputs
-  expect_equal(validate_sk(1), 1)
-  expect_equal(validate_sk(2), 2)
-
-  # Invalid input - does it return the default?
-  expect_equal(suppressWarnings(validate_sk(0)), 1)
-
-  # Invalid inputs
-  expect_warning(validate_sk(1.5), "s_k")
-  expect_warning(validate_sk(0), "s_k")
-  expect_warning(validate_sk(blah), "s_k")
-  expect_warning(validate_sk(NULL), "s_k")
-  expect_warning(validate_sk("1"), "s_k")
 })
 
 test_that("validate_sm", {

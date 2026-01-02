@@ -1,5 +1,5 @@
 # Clusterability R Package
-The **clusterability** package tests for cluster tendancy of a dataset. Results of these tests can inform whether clustering algorithms are appropriate for the data.
+The **clusterability** package tests for cluster tendency of a dataset. Results of these tests can inform whether clustering algorithms are appropriate for the data.
 
 ## Installation
 You can install the released version of **clusterability** from [CRAN](https://CRAN.R-project.org) with:
@@ -94,9 +94,9 @@ Parameters to customize the behavior of sparse PCA are prefixed with *spca_*, Di
 Documentation is also available in the accompanying paper.
 
 ## Supplemental Files
-##### clusterability_timings.R
-This contains code to test the relative computational performance of each test and dimension reduction combination. The **bench** package is used to run these tests.
-##### examples.R
+#### examples.R
 This contains code to replicate the examples in the accompanying paper.
-##### Rplots.R
+#### examples_performance_testing.R
+This contains code to test the relative computational performance of each test and dimension reduction combination. The [**bench**](https://CRAN.R-project.org/package=bench) package is used to run these tests.
+#### examples_plots.R
 This contains code to replicate the plots provided in the accompanying paper.

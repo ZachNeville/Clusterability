@@ -1,7 +1,7 @@
 Package: clusterability
 Title: Performs Tests for Cluster Tendency of a Data Set
-Version: 0.1.1.0
-Authors@R: c(person("Zachariah", "Neville", email = "z.neville@stat.fsu.edu", role = c("aut", "cre")), person("Naomi", "Brownstein", email = "Naomi.Brownstein@moffitt.org", role = "aut"))
+Version: 0.2.2.0
+Authors@R: c(person("Zachariah", "Neville", email = "zachariahneville@outlook.com", role = c("aut", "cre")), person("Naomi", "Brownstein", email = "brownstn@musc.edu", role = "aut"), person("Maya", "Ackerman", role = "aut"), person("Andreas", "Adolfsson", role = "aut"))
 Description: Test for cluster tendency (clusterability) of a data set.
     The methods implemented - reducing the data set to a single dimension using principal component analysis or computing
     pairwise distances, and performing a multimodality test like the Dip Test or Silverman's Critical Bandwidth Test - 
@@ -11,6 +11,6 @@ Depends: R (>= 3.4.0)
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
-Imports: diptest, splines
+RoxygenNote: 7.3.3
+Imports: diptest, splines, sparsepca, elasticnet
 Suggests: testthat

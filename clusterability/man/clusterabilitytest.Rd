@@ -35,18 +35,9 @@ clusterabilitytest(
 
 \item{test}{the test to be performed. Either \code{"dip"} or \code{"silverman"}. See 'Details' section below for how to pick a test.}
 
-\item{reduction}{any dimension reduction that is to be performed.
-\itemize{
-\item{\code{"none"} performs no dimension reduction.}
-\item{\code{"pca"} uses the scores from the first principal component.}
-\item{\code{"spca"} uses the scores from the first (sparse) principal component.}
-\item{\code{"distance"} computes pairwise distances (using \code{distance_metric} as the metric).}
-}
-For multivariate \code{data}, dimension reduction is required.}
-
 \item{distance_metric}{if applicable, the metric to be used in computing pairwise distances.
 
-The \code{"euclidean"} (default), \code{"maximum", "manhattan", "canberra", "binary"} choices work the same as in \code{\link{dist}}. The Minkowski metric is available by providing \code{"minkowski(p)"}.
+The \code{"euclidean"} (default), \code{"maximum", "manhattan", "canberra", "binary"} choices work the same as in \link{dist}. The Minkowski metric is available by providing \code{"minkowski(p)"}.
 
 Additional choices are:
 \itemize{
@@ -61,16 +52,16 @@ CAUTION: Not all of these have been tested, but instead are provided to potentia
 \item{distance_standardize}{how the variables should be standardized, if at all.
 \itemize{
 \item{\code{"none"}: no standardization is performed}
-\item{\code{"std"} (default) each variable standardized to have mean 0 and standard deviation 1}
+\item{\code{"std"} (default): each variable standardized to have mean 0 and standard deviation 1}
 \item{\code{"mean"}: each variable standardized to have mean 0 (standard deviation is unchanged)}
 \item{\code{"median"}: each variable standardized to have median 0 (standard deviation is unchanged)}
 }}
 
-\item{pca_center}{if applicable, a logical value indicating whether the variables should be shifted to be zero centered (see \code{\link{prcomp}} for more details). Default is \code{TRUE}.}
+\item{pca_center}{if applicable, a logical value indicating whether the variables should be shifted to be zero centered (see \link{prcomp} for more details). Default is \code{TRUE}.}
 
-\item{pca_scale}{if applicable, a logical value indicating whether the variables should be scaled to have unit variance before the analysis takes place (see \code{\link{prcomp}} for details). Default is \code{TRUE}.}
+\item{pca_scale}{if applicable, a logical value indicating whether the variables should be scaled to have unit variance before the analysis takes place (see prcomp for details). Default is \code{TRUE}.}
 
-\item{spca_method}{if applicable, the sparse PCA method to use. Either \code{"EN"} for the elasticnet implementation or \code{"VP"} for the variable projection implementation.}
+\item{spca_method}{if applicable, the sparse PCA method to use. Either \code{"EN"} for the \code{\link[elasticnet:spca]{elasticnet}} implementation or \code{"VP"} for the \code{\link[sparsepca:spca]{variable projection}} implementation.}
 
 \item{spca_EN_para}{if applicable, a positive number used as a penalty parameter. Default is \code{0.01}.}
 
@@ -88,7 +79,7 @@ CAUTION: Not all of these have been tested, but instead are provided to potentia
 
 \item{completecase}{a logical value indicating whether a complete case analysis should be performed. For both tests, missing data must be removed before the test can be performed. This can be done manually by the user or by setting \code{completecase = TRUE}.}
 
-\item{d_simulatepvalue}{for Dip Test, a logical value indicating whether \eqn{p}~values should be obtained via Monte Carlo simulation (see \code{\link[diptest]{dip.test}} for details).}
+\item{d_simulatepvalue}{for Dip Test, a logical value indicating whether \eqn{p}~values should be obtained via Monte Carlo simulation (see \link[diptest]{dip.test} for details).}
 
 \item{d_reps}{for Dip Test, a positive integer. The number of replicates used in Monte Carlo simulation. Only used if \code{d_simulatepvalue} is \code{TRUE}.}
 
@@ -103,23 +94,23 @@ CAUTION: Not all of these have been tested, but instead are provided to potentia
 \item{s_outseed}{for Silverman Test, a logical value indicating whether to return the state of the random number generator as part of the output. This is used in limited cases for troubleshooting, so the default is \code{FALSE}.}
 }
 \value{
-\code{clusterabilitytest} returns a \code{clusterability} object containing information on the test performed and results. Can be printed using the \code{\link{print.clusterability}} function.
+\code{clusterabilitytest} returns a \code{clusterability} object containing information on the test performed and results. Can be printed using the \link{print.clusterability} function.
 }
 \description{
-Performs tests for clusterability of a data set and returns results in a clusterability object. Can do data reduction via PCA, sparse PCA, or pairwise distances and standardize data prior to performing the test.
+Performs tests for clusterability of a data set and returns results in a \code{clusterability} object. Dimension reduction via PCA, sparse PCA, or pairwise distances and data standardization can be performed prior to performing the test.
 }
 \examples{
 ### Quick start ###
 # Load data and remove Species
 data(iris)
-iris_num <- iris[,-5]
-plot(iris_num)
+iris_numeric <- iris[, -5]
+plot(iris_numeric)
 
 # Run test using default options
-clust_result <- clusterabilitytest(iris_num, "dip")
+clusterability_result <- clusterabilitytest(iris_numeric, "dip")
 
 # Print results
-print(clust_result)
+print(clusterability_result)
 
 \donttest{
 ### Longer Example: Specifying Parameters ###
@@ -129,11 +120,14 @@ plot(normals2)
 
 # Using Silverman's test, pairwise distances to reduce dimension,
 # 1,000 bootstrap replicates, with an RNG seed of 12345
-clust_result2 <- clusterabilitytest(normals2, "silverman", reduction = "distance",
-     s_m = 1000, s_setseed = 12345)
+clusterability_result2 <- clusterabilitytest(normals2, "silverman",
+  reduction = "distance",
+  s_m = 1000, s_setseed = 12345
+)
 
 # Print result
-print(clust_result2)}
+print(clusterability_result2)
+}
 
 }
 \references{
@@ -141,10 +135,10 @@ Hall, P. and York, M., 2001. On the calibration of Silverman's test for multimod
 
 Silverman, B.W., 1981. Using kernel density estimates to investigate multimodality. Journal of the Royal Statistical Society. Series B (Methodological), pp.97-99.
 
-Martin Maechler (2016). diptest: Hartigan's Dip Test Statistic for Unimodality - Corrected. R package version 0.75-7. https://CRAN.R-project.org/package=diptest
+Martin Maechler (2016). diptest: Hartigan's Dip Test Statistic for Unimodality - Corrected. R package version 0.77-2. https://CRAN.R-project.org/package=diptest
 
 Schwaiger F, Holzmann H. Package which implements the silvermantest; 2013. Available from: https://www.mathematik.uni-marburg.de/stochastik/R packages/.
 }
 \seealso{
-\code{\link{print.clusterability}}
+{\link{print.clusterability}}
 }

@@ -1,5 +1,5 @@
 # Clusterability R Package
-The **clusterability** package tests for cluster tendency of a dataset. Results of these tests can inform whether clustering algorithms are appropriate for the data.
+The **clusterability** package tests for cluster tendancy of a dataset. Results of these tests can inform whether clustering algorithms are appropriate for the data.
 
 ## Installation
 You can install the released version of **clusterability** from [CRAN](https://CRAN.R-project.org) with:
@@ -7,7 +7,7 @@ You can install the released version of **clusterability** from [CRAN](https://C
 ``` r
 install.packages("clusterability")
 ```
-If you would prefer to use a newer version of **clusterability** not yet available on CRAN, it can be downloaded as a source package from this repository and installed locally. [Documentation](https://cran.r-project.org/doc/manuals/R-admin.html#Installing-packages) on this process can be found on the R project website.
+If you would prefer to use a newer version of **clusterability** not yet available on CRAN, it can be downloaded as a binary package from this repository and installed locally. [Documentation](https://cran.r-project.org/doc/manuals/R-admin.html#Installing-packages) on this process can be found on the R project website.
 
 ## Example
 
@@ -95,7 +95,7 @@ Documentation is also available in the accompanying paper.
 
 ## Supplemental Files
 The following [supplemental files](clusterability/inst/doc/SupplementalFiles.md) are provided to assist with reproducing the results in the accompanying paper.
- 
+
 ##### clusterability_timings.R
 This contains code to test the relative computational performance of each test and dimension reduction combination. The **bench** package is used to run these tests.
 ##### examples.R

@@ -20,8 +20,7 @@ normals1
 A dataset containing 150 observations generated from a multivariate Normal
 distribution. The distribution has mean vector (0, 4), each variable has unit
 variance, and the variables are uncorrelated. This dataset is not clusterable.
-}
-\details{
+
 The cluster variable is 1 for all observations because all were sampled from
 the same distribution. Remove the variable before using the dataset in any
 tests.

@@ -1,4 +1,4 @@
-context("Print and Summary")
+context("Clusterability Test and Print")
 library(clusterability)
 
 test_that("print - errors", {
