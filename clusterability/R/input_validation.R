@@ -20,7 +20,7 @@
 validate_data <- function(d, data_name) {
   data_is_null <- tryCatch(
     isTRUE(is.null(d)),
-    error = function(e) return(TRUE)
+    error = function(e) TRUE
   )
 
   if (data_is_null) {
@@ -44,7 +44,7 @@ validate_test <- function(test) {
 
   test_is_valid <- tryCatch(
     isTRUE((!is.null(test) && (toupper(test) %in% valid_tests))),
-    error = function(e) return(FALSE)
+    error = function(e) FALSE
   )
 
   if (!test_is_valid) {
@@ -59,7 +59,7 @@ validate_test <- function(test) {
 validate_metric <- function(metric, x) {
   metric_is_null <- tryCatch(
     isTRUE(is.null(metric)),
-    error = function(e) return(TRUE)
+    error = function(e) TRUE
   )
 
   if (metric_is_null) {
@@ -109,7 +109,7 @@ validate_reduction <- function(reduction) {
   valid_reductions <- c("PCA", "SPCA", "DISTANCE", "NONE")
   reduction_is_valid <- tryCatch(
     isTRUE((!is.null(reduction) && (toupper(reduction) %in% valid_reductions))),
-    error = function(e) return(FALSE)
+    error = function(e) FALSE
   )
 
   if (!reduction_is_valid) {
@@ -143,7 +143,7 @@ validate_standardize <- function(standard) {
   valid_standardize_values <- c("STD", "NONE", "MEAN", "MEDIAN")
   is_valid <- tryCatch(
     isTRUE((!is.null(standard) && (toupper(standard) %in% valid_standardize_values))),
-    error = function(e) return(FALSE)
+    error = function(e) FALSE
   )
 
   if (!is_valid) {
@@ -173,7 +173,7 @@ validate_spca_method <- function(spca_method) {
   valid_spca_methods <- c("EN", "VP")
   is_valid <- tryCatch(
     isTRUE((!is.null(spca_method) && (toupper(spca_method) %in% valid_spca_methods))),
-    error = function(e) return(FALSE)
+    error = function(e) FALSE
   )
 
   if (!is_valid) {
@@ -197,10 +197,10 @@ validate_spca_VP_scale <- function(scale) {
 
 #' Validates the spca_VP_alpha parameter
 #' @noRd
-validate_spca_VP_alpha <- function(spca_VP_alpha){
+validate_spca_VP_alpha <- function(spca_VP_alpha) {
   is_valid <- tryCatch(
     isTRUE((!is.null(spca_VP_alpha) && is.numeric(spca_VP_alpha))),
-    error = function(e) return(FALSE)
+    error = function(e) FALSE
   )
 
   if (!is_valid) {
@@ -213,10 +213,10 @@ validate_spca_VP_alpha <- function(spca_VP_alpha){
 
 #' Validates the spca_VP_beta parameter
 #' @noRd
-validate_spca_VP_beta <- function(spca_VP_beta){
+validate_spca_VP_beta <- function(spca_VP_beta) {
   is_valid <- tryCatch(
     isTRUE((!is.null(spca_VP_beta) && is.numeric(spca_VP_beta))),
-    error = function(e) return(FALSE)
+    error = function(e) FALSE
   )
 
   if (!is_valid) {
@@ -229,10 +229,10 @@ validate_spca_VP_beta <- function(spca_VP_beta){
 
 #' Validates the spca_EN_para parameter
 #' @noRd
-validate_spca_EN_para <- function(spca_EN_para){
+validate_spca_EN_para <- function(spca_EN_para) {
   is_valid <- tryCatch(
     isTRUE((!is.null(spca_EN_para) && is.numeric(spca_EN_para) && spca_EN_para > 0)),
-    error = function(e) return(FALSE)
+    error = function(e) FALSE
   )
 
   if (!is_valid) {
@@ -245,10 +245,10 @@ validate_spca_EN_para <- function(spca_EN_para){
 
 #' Validates the spca_EN_lambda parameter
 #' @noRd
-validate_spca_EN_lambda <- function(spca_EN_lambda){
+validate_spca_EN_lambda <- function(spca_EN_lambda) {
   is_valid <- tryCatch(
     isTRUE((!is.null(spca_EN_lambda) && is.numeric(spca_EN_lambda))),
-    error = function(e) return(FALSE)
+    error = function(e) FALSE
   )
 
   if (!is_valid) {
@@ -288,7 +288,7 @@ validate_soutseed <- function(s_outseed) {
 validate_dreps <- function(d_reps) {
   is_valid <- tryCatch(
     isTRUE((!is.null(d_reps) && is.numeric(d_reps) && (d_reps >= 1) && ((d_reps %% 1) == 0))),
-    error = function(e) return(FALSE)
+    error = function(e) FALSE
   )
 
   if (!is_valid) {
@@ -304,7 +304,7 @@ validate_dreps <- function(d_reps) {
 validate_sm <- function(s_m) {
   is_valid <- tryCatch(
     isTRUE((!is.null(s_m) && is.numeric(s_m) && (s_m >= 1) && ((s_m %% 1) == 0))),
-    error = function(e) return(FALSE)
+    error = function(e) FALSE
   )
 
   if (!is_valid) {
@@ -320,7 +320,7 @@ validate_sm <- function(s_m) {
 validate_sdigits <- function(s_digits) {
   is_valid <- tryCatch(
     isTRUE((!is.null(s_digits) && is.numeric(s_digits) && (s_digits >= 1) && ((s_digits %% 1) == 0))),
-    error = function(e) return(FALSE)
+    error = function(e) FALSE
   )
 
   if (!is_valid) {
@@ -337,12 +337,12 @@ validate_ssetseed <- function(s_setseed) {
   # Note that NULL is the default so it should still be allowed
   is_integer <- tryCatch(
     isTRUE((is.numeric(s_setseed) && (s_setseed %% 1 == 0))),
-    error = function(e) return(FALSE)
+    error = function(e) FALSE
   )
 
   is_null <- tryCatch(
     is.null(s_setseed),
-    error = function(e) return(FALSE)
+    error = function(e) FALSE
   )
 
   if (!is_integer && !is_null) {
@@ -359,7 +359,7 @@ validate_ssetseed <- function(s_setseed) {
 validate_boolean <- function(var, name, default) {
   is_logical <- tryCatch(
     identical(typeof(var), "logical"),
-    error = function(errmsg) return(FALSE)
+    error = function(errmsg) FALSE
   )
 
   if (!is_logical) {

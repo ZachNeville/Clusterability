@@ -185,11 +185,12 @@ clusterabilitytest <- function(data,
     data <- perform_pca(data, pca_center, pca_scale)
   } else if (identical(reduction, "SPCA")) {
     if (identical(spca_method, "VP")) {
-      data <- perform_spca_sparsepca(data,
-                                     spca_VP_center,
-                                     spca_VP_scale,
-                                     spca_VP_alpha,
-                                     spca_VP_beta
+      data <- perform_spca_sparsepca(
+        data,
+        spca_VP_center,
+        spca_VP_scale,
+        spca_VP_alpha,
+        spca_VP_beta
       )
     } else if (identical(spca_method, "EN")) {
       data <- perform_spca_elasticnet(data, spca_EN_para, spca_EN_lambda)
