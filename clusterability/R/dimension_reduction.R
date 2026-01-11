@@ -39,7 +39,18 @@ perform_pca <- function(x, center, scale) {
 #' Compute and return the scores for the first sparse principal component using the sparsepca implementation.
 #' @noRd
 perform_spca_sparsepca <- function(x, center, scale, alpha, beta) {
-  spca_result <- sparsepca::spca(x, k = 1, alpha = alpha, beta = beta, center = center, scale = scale, verbose = 0)
+  spca_result <- suppressPackageStartupMessages(
+    sparsepca::spca(
+      x,
+      k = 1,
+      alpha = alpha,
+      beta = beta,
+      center = center,
+      scale = scale,
+      verbose = 0
+      )
+  )
+
 
   if (spca_result$loadings[1, 1] < 0) {
     return(-1 * spca_result$scores[, 1])
@@ -52,11 +63,19 @@ perform_spca_sparsepca <- function(x, center, scale, alpha, beta) {
 #' @noRd
 perform_spca_elasticnet <- function(x, para, lambda) {
   # elasticnet spca uses its own rules for centering and scaling.
-  spca_result <- elasticnet::spca(x, 1, para,
-    type = "predictor",
-    sparse = "penalty", use.corr = FALSE, lambda = lambda,
-    max.iter = 200, trace = FALSE, eps.conv = 1e-3
+  spca_result <- suppressPackageStartupMessages(
+    elasticnet::spca(
+      x,
+      1,
+      para,
+      type = "predictor",
+      sparse = "penalty",
+      use.corr = FALSE,
+      lambda = lambda,
+      max.iter = 200, trace = FALSE, eps.conv = 1e-3
+    )
   )
+
 
   scores <- x %*% spca_result$loadings
   if (spca_result$loadings[1, 1] < 0) {
