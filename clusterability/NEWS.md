@@ -1,3 +1,6 @@
+# clusterability 0.2.3.0
+* For the clusterabilitytest() function, the distance_metric parameter has a new available option: "gower". This allows users to compute pairwise distances using the gower metric, as implemented in the cluster package, during the dimension reduction step. 
+
 # clusterability 0.2.2.0
 * Code and accompanying documentation have been updated to improve readability and follow a more consistent style.
 

@@ -55,7 +55,7 @@ Default values for the optional parameters were used. To learn more about custom
 The **data** and **test** parameters are required when calling the `clusterabilitytest()` function.
 
 ##### data
-The dataset to be used in the test. Internally, the `as.matrix` R function is used to coerce the **data** argument, so the **data** argument should be a dataframe, matrix, or other object that can be coerced to a matrix. The dataset should consist only of numeric values.
+The dataset to be used in the test. Internally, the `as.matrix` R function is used to coerce the **data** argument, so the **data** argument should be a dataframe, matrix, or other object that can be coerced to a matrix. The dataset should consist only of numeric values, unless using a **reduction** of `"distance"` and **distance_metric** of `"gower"`, which can accommodate non-numeric data.
 
 ##### test
 The test to be performed. Valid values are `"dip"`, which will perform the Dip Test of Unimodality, or `"silverman"`, which will perform Silverman's Critical Bandwidth test.

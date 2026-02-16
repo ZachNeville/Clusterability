@@ -52,10 +52,10 @@ Additional choices are:
 \itemize{
 \item{\code{"sqeuc"}: squared Euclidean distances.}
 \item{\code{"cov"}: covariance similarity coefficient,}
-\item{\code{"corr"}: correlation similarity coefficient}
+\item{\code{"corr"}: correlation similarity coefficient.}
 \item{\code{"sqcorr"}: squared correlation similarity coefficient.}
+\item{\code{"gower"}: gower metric, as implemented in the \link[cluster:daisy]{cluster} package.}
 }
-
 CAUTION: Not all of these have been tested, but instead are provided to potentially be useful. If in doubt, use the default \code{"euclidean"}.}
 
 \item{distance_standardize}{how the variables should be standardized, if at all.

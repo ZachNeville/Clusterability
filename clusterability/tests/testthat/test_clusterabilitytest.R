@@ -10,6 +10,15 @@ test_that("print - errors", {
   expect_error(print.clusterability(iris1), "clusterability", info = "Expect error for incorrect class types")
 })
 
+test_that("mixed data", {
+  mixed_data <- data.frame(rnorm(50), as.factor(rbinom(50, 1, 0.5)))
+  clusterability_result <- clusterabilitytest(mixed_data, test = "dip", reduction = "distance", distance_metric = "gower", distance_standardize = "none")
+
+  expect_output(print.clusterability(clusterability_result, "gower"))
+
+  expect_error(clusterabilitytest(mixed_data, test = "silverman"), "non-numeric", info = "Expect error for mixed data without using gower metric + distances")
+})
+
 test_that("print - conditionals", {
   iris1 <- data(iris)
   iris1 <- iris[, 1:4]

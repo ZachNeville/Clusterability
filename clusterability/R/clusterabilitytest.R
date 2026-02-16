@@ -35,10 +35,10 @@
 #' \itemize{
 #' \item{\code{"sqeuc"}: squared Euclidean distances.}
 #' \item{\code{"cov"}: covariance similarity coefficient,}
-#' \item{\code{"corr"}: correlation similarity coefficient}
+#' \item{\code{"corr"}: correlation similarity coefficient.}
 #' \item{\code{"sqcorr"}: squared correlation similarity coefficient.}
+#' \item{\code{"gower"}: gower metric, as implemented in the \link[cluster:daisy]{cluster} package.}
 #' }
-#'
 #' CAUTION: Not all of these have been tested, but instead are provided to potentially be useful. If in doubt, use the default \code{"euclidean"}.
 #' @param distance_standardize how the variables should be standardized, if at all.
 #' \itemize{
@@ -137,12 +137,6 @@ clusterabilitytest <- function(data,
   # Validate data
   validate_data(data, data_name)
 
-  # Gather info about the original data set for printing later
-  data <- as.matrix(data)
-  observation_count <- NROW(data)
-  variable_count <- NCOL(data)
-  missing_count <- count_missing_rows(data)
-
   # Validate parameters so that problems are caught before performing the test.
   test <- validate_test(test)
   reduction <- validate_reduction(reduction)
@@ -157,7 +151,7 @@ clusterabilitytest <- function(data,
   spca_EN_lambda <- validate_spca_EN_lambda(spca_EN_lambda)
   is_dist_matrix <- validate_isdistmatrix(is_dist_matrix, reduction, data)
   distance_metric <- validate_metric(distance_metric, data)
-  distance_standardize <- validate_standardize(distance_standardize)
+  distance_standardize <- validate_standardize(distance_standardize, reduction, data)
   completecase <- validate_completecase(completecase)
   d_simulatepvalue <- validate_dsimulatepvalue(d_simulatepvalue)
   d_reps <- validate_dreps(d_reps)
@@ -168,6 +162,11 @@ clusterabilitytest <- function(data,
   s_setseed <- validate_ssetseed(s_setseed)
   s_outseed <- validate_soutseed(s_outseed)
 
+  # Gather info about the original data set for printing later
+  observation_count <- NROW(data)
+  variable_count <- NCOL(data)
+  missing_count <- count_missing_rows(data)
+
   # Get complete cases
   if (completecase) {
     data <- get_complete_cases(data)
@@ -175,8 +174,8 @@ clusterabilitytest <- function(data,
     stop("Missing data was found in the data set and the `completecase` parameter was not set to TRUE. The Dip and Silverman tests cannot be performed if there is missing data.")
   }
 
-  # Perform standardization if using pairwise distances. Even when "NONE" this works.
-  if (identical(reduction, "DISTANCE")) {
+  # Perform standardization if using pairwise distances.
+  if (identical(reduction, "DISTANCE") && !identical(distance_standardize, "NONE")) {
     data <- standardize_data(data, distance_standardize)
   }
 
@@ -203,7 +202,7 @@ clusterabilitytest <- function(data,
 
   # Run the test
   if (identical(test, "DIP")) {
-    dip_test_result <- perform_dip_test(data, d_simulatepvalue, d_reps)
+    dip_test_result <- perform_dip_test(as.matrix(data), d_simulatepvalue, d_reps)
   } else {
     silverman_test_result <- perform_silverman_test(as.matrix(data), s_k, s_m, s_adjust, s_digits, s_setseed)
   }

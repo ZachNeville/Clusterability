@@ -20,6 +20,7 @@ test_that("validate_metric", {
   # Setup
   testdata <- cbind(rnorm(100), rnorm(100, 5, 1))
   test1d <- rnorm(100)
+  mixed_data <- data.frame(rnorm(50), as.factor(rbinom(50, 1, 0.5)))
 
   # Tests
   expect_match(validate_metric("EUCLIDEAN", testdata), "euclidean", fixed = TRUE)
@@ -34,6 +35,8 @@ test_that("validate_metric", {
   expect_match(validate_metric("sQeUC", testdata), "sqeuc", fixed = TRUE)
   expect_match(validate_metric("cORr", testdata), "corr", fixed = TRUE)
   expect_match(validate_metric("sQCOrr", testdata), "sqcorr", fixed = TRUE)
+  expect_match(validate_metric("gower", mixed_data), "gower", fixed = TRUE)
+  expect_match(validate_metric("gower", testdata), "gower", fixed = TRUE)
 
   expect_warning(validate_metric(NULL, testdata), "euclidean")
   expect_warning(validate_metric(blah, testdata), "euclidean")
@@ -43,6 +46,7 @@ test_that("validate_metric", {
 
   expect_error(validate_metric("coV", test1d), "dimensional")
   expect_error(validate_metric("coRR", test1d), "dimensional")
+  expect_error(validate_metric("euclidean", mixed_data), "gower")
 })
 
 test_that("validate_reduction", {
@@ -72,14 +76,19 @@ test_that("validate_isdistmatrix", {
 })
 
 test_that("validate_standardize", {
-  expect_match(validate_standardize("nOnE"), "NONE", fixed = TRUE)
-  expect_match(validate_standardize("STd"), "STD", fixed = TRUE)
-  expect_match(validate_standardize("MEan"), "MEAN", fixed = TRUE)
-  expect_match(validate_standardize("meDIaN"), "MEDIAN", fixed = TRUE)
+  numeric_data <- data.frame(rnorm(100), rnorm(100), rnorm(100))
+  mixed_data <- data.frame(rnorm(50), as.factor(rbinom(50, 1, 0.5)))
 
-  expect_warning(validate_standardize("blah"), "standardization")
-  expect_warning(validate_standardize(NULL), "standardization")
-  expect_warning(validate_standardize(blah), "standardization")
+  expect_match(validate_standardize("nOnE", "distance", numeric_data), "NONE", fixed = TRUE)
+  expect_match(validate_standardize("STd", "distance", numeric_data), "STD", fixed = TRUE)
+  expect_match(validate_standardize("MEan", "distance", numeric_data), "MEAN", fixed = TRUE)
+  expect_match(validate_standardize("meDIaN", "distance", numeric_data), "MEDIAN", fixed = TRUE)
+  expect_match(validate_standardize("NONE", "distance", mixed_data), "NONE", fixed = TRUE)
+
+  expect_warning(validate_standardize("blah", "distance", numeric_data), "standardization")
+  expect_warning(validate_standardize(NULL, "distance", numeric_data), "standardization")
+  expect_warning(validate_standardize(blah, "distance", numeric_data), "standardization")
+  expect_warning(validate_standardize("STD", "distance", mixed_data), "non-numeric")
 })
 
 test_that("validate_pca_center", {

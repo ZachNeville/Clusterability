@@ -99,11 +99,12 @@ compute_pairwise_distances <- function(x, method) {
   # "binary" = binary
 
   # Custom methods which are available in SAS and were added here for consistency
-  # http://documentation.sas.com/?cdcId=pgmsascdc&cdcVersion=9.4_3.3&docsetId=statug&docsetTarget=statug_distance_details01.htm&locale=en
+  # https://documentation.sas.com/doc/en/statug/15.3/statug_distance_syntax01.htm
   # "corr" = correlation
   # "sqeuc" = squared euclidean
   # "sqcorr" = squared correlation metric
   # "cov" = covariance metric
+  # "gower" = gower metric
 
   # Check if it's supported by built-in dist()
   default_dist_methods <- c("euclidean", "maximum", "manhattan", "canberra", "binary")
@@ -129,7 +130,8 @@ compute_pairwise_distances <- function(x, method) {
       "sqeuc" = get_distance_squared_euclidean(x),
       "corr" = get_distance_correlation(x),
       "cov" = get_distance_covariance(x),
-      "sqcorr" = get_distance_squared_correlation(x)
+      "sqcorr" = get_distance_squared_correlation(x),
+      "gower" = get_distance_gower(x)
     )
   }
 
@@ -140,18 +142,30 @@ compute_pairwise_distances <- function(x, method) {
 #' @noRd
 get_complete_cases <- function(x) {
   complete_cases <- stats::complete.cases(x)
-  x[complete_cases, ]
+
+  if (is.vector(x)){
+    x[complete_cases]
+  } else {
+    x[complete_cases, ]
+  }
 }
 
 #' Returns the number of rows that are not complete cases.
 #' @noRd
 count_missing_rows <- function(x) {
   total_rows <- NROW(x)
-  complete_rows <- NROW(x[stats::complete.cases(x), ])
-  (total_rows - complete_rows)
+  complete_case_vector <- stats::complete.cases(x)
+
+  if (is.vector(x)) {
+    complete_rows <- NROW(x[complete_case_vector])
+    (total_rows - complete_rows)
+  } else {
+    complete_rows <- NROW(x[stats::complete.cases(x), ])
+    (total_rows - complete_rows)
+  }
 }
 
-#' Returns a distance matrix using the correlation metric.
+#' Returns a distance vector using the correlation metric.
 #' @noRd
 get_distance_correlation <- function(x) {
   # Matches SAS
@@ -168,7 +182,7 @@ get_distance_correlation <- function(x) {
   }
 }
 
-#' Returns a distance matrix using the covariance metric.
+#' Returns a distance vector using the covariance metric.
 #' @noRd
 get_distance_covariance <- function(x) {
   # Matches SAS
@@ -179,19 +193,27 @@ get_distance_covariance <- function(x) {
   full_matrix[lower.tri(full_matrix)]
 }
 
-#' Returns a distance matrix using the squared euclidean metric.
+#' Returns a distance vector using the squared euclidean metric.
 #' @noRd
 get_distance_squared_euclidean <- function(x) {
   # Matches SAS
   as.vector(stats::dist(x, method = "euclidean"))^2
 }
 
-#' Returns a distance matrix using the squared correlation metric.
+#' Returns a distance vector using the squared correlation metric.
 #' @noRd
 get_distance_squared_correlation <- function(x) {
   # Matches SAS
   # Validation is handled in validate_metric(). Cannot have 1-dimensional data.
   get_distance_correlation(x)^2
+}
+
+#' Returns a distance vector using the gower metric.
+#' @noRd
+get_distance_gower <- function(x) {
+  # Gower metric is provided for convenience but the output here has not yet been compared with the output of SAS's PROC DISTNACE.
+  dissimilarity_matrix <- cluster::daisy(x, metric = "gower")
+  as.vector(dissimilarity_matrix)
 }
 
 #' Returns the lower triangular portion of a distance matrix.

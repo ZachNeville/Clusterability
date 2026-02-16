@@ -56,7 +56,7 @@ validate_test <- function(test) {
 
 #' Validates the 'distance_metric' parameter and returns a lowercase version of it
 #' @noRd
-validate_metric <- function(metric, x) {
+validate_metric <- function(metric, data) {
   metric_is_null <- tryCatch(
     isTRUE(is.null(metric)),
     error = function(e) TRUE
@@ -68,7 +68,13 @@ validate_metric <- function(metric, x) {
   } else {
     metric_lowercase <- tolower(metric)
 
-    valid_metrics <- c("euclidean", "maximum", "manhattan", "canberra", "binary", "sqeuc", "sqcorr", "corr", "cov")
+    valid_metrics <- c("euclidean", "maximum", "manhattan", "canberra", "binary", "sqeuc", "sqcorr", "corr", "cov", "gower")
+
+    numeric_vector <- sapply(data, is.numeric)
+
+    if (FALSE %in% numeric_vector && metric_lowercase != "gower"){
+      stop("When data contains non-numeric columns, the gower metric must be used for pairwise distances.")
+    }
 
     # Check for a valid minkowski metric. Form must be "minkowski(p)", where p is a positive numeric value (not necessarily integer)
     minkowski_regex <- "minkowski\\([[:digit:]]*[.]?[[:digit:]]*\\)"
@@ -76,7 +82,7 @@ validate_metric <- function(metric, x) {
 
     # If it's one of the valid metrics, return the lowercase version
     if (isTRUE(metric_lowercase %in% valid_metrics)) {
-      if (isTRUE(metric_lowercase %in% c("cov", "corr", "sqcorr") && identical(as.double(NCOL(x)), 1))) {
+      if (isTRUE(metric_lowercase %in% c("cov", "corr", "sqcorr") && identical(as.double(NCOL(data)), 1))) {
         stop('The "cov", "corr", and "sqcorr" metrics are not available for 1-dimensional data.')
       } else {
         return(metric_lowercase)
@@ -139,7 +145,7 @@ validate_isdistmatrix <- function(is_dist_matrix, reduction, data) {
 
 #' Validates the 'distance_standardize' argument and returns an uppercase version of it
 #' @noRd
-validate_standardize <- function(standard) {
+validate_standardize <- function(standard, reduction, data) {
   valid_standardize_values <- c("STD", "NONE", "MEAN", "MEDIAN")
   is_valid <- tryCatch(
     isTRUE((!is.null(standard) && (toupper(standard) %in% valid_standardize_values))),
@@ -149,9 +155,19 @@ validate_standardize <- function(standard) {
   if (!is_valid) {
     warning("Invalid standardization technique was used. No standardization was performed. Please see documentation for valid techniques.")
     return("NONE")
-  } else {
-    toupper(standard)
   }
+
+  if (tolower(reduction) == "distance" && tolower(standard) != "none") {
+    # Data standardization is only available for numeric data. Check to see if there are any non-numeric columns.
+    numeric_vector <- sapply(data, is.numeric)
+
+    if (FALSE %in% numeric_vector){
+      warning("Data standardization is only available for numeric data, but the data contains non-numeric columns. No data standardization was performed.")
+      return("NONE")
+    }
+  }
+
+  toupper(standard)
 }
 
 #' Validate that pca_center is a logical type

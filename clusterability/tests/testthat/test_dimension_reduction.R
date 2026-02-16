@@ -21,10 +21,17 @@ test_that("get_complete_cases", {
   # Setup
   test1 <- matrix(c(1, NA, 8, 2, 4, 0, 9, 7, 7), nrow = 3)
   test2 <- matrix(c(1, 4, 8, 2, 4, 0, 9, 7, 7), nrow = 3)
+  test3 <- rnorm(50)
+  test3[15] <- NA
+  test4 <- data.frame(rnorm(100), as.factor(rbinom(100, 1, 0.5)))
+  test4[1, 1] <- NA
+
 
   # Test - does it work?
-  expect_equal(nrow(get_complete_cases(test1)), 2, info = "get_complete_cases removes NA rows")
-  expect_equal(nrow(get_complete_cases(test2)), 3, info = "get_complete_cases doesn't remove complete rows")
+  expect_equal(NROW(get_complete_cases(test1)), 2, info = "get_complete_cases removes NA rows")
+  expect_equal(NROW(get_complete_cases(test2)), 3, info = "get_complete_cases doesn't remove complete rows")
+  expect_equal(NROW(get_complete_cases(test3)), 49, info = "get_complete_cases works on vectors")
+  expect_equal(NROW(get_complete_cases(test4)), 99, info = "get_complete_cases works on data frames")
 })
 
 test_that("compute_pairwise_distances", {
